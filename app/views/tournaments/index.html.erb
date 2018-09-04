@@ -1,1 +1,37 @@
-<%= link_to "Create New Tournament", new_tournament_path %>
+
+<%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
+
+<table class="table row">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">Registration</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @tournaments.empty? %>
+      <tr>
+        <td colspan="4">No tournaments</td>
+      </tr>
+    <% else %>
+      <% @tournaments.each do |tourn| %>
+        <tr data-id="<%= tourn.id %>">
+          <th scope="row" class="<%= @picks.include?(index + 1) ? "pick_number" : '' %>"><%= index + 1 %></th>
+          <td><%= tourn.name %></td>
+          <td><%= tourn.date_played %></td>
+          <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
+          <td>
+            <% if tourn.closed %>
+              This tournament is closed
+            <% else %>
+              <%= button_to "Join Tournament", "#", class: "btn btn-sm btn-primary" %>
+              <%= button_to "Remove tourn", "#", class: "btn btn-sm btn-danger" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

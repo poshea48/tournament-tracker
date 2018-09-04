@@ -3,6 +3,7 @@ class TournamentsController < ApplicationController
   before_action :set_tournament, only: [:show, :edit]
 
   def index
+    @tournaments = Tournament.all 
   end
 
   def new

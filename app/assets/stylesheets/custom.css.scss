@@ -1,0 +1,41 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome";
+body {
+  font-size: 14px;
+  font-family: sans-serif;
+}
+.form_container {
+  display: flex;
+  justify-content: center;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+}
+.form_layout {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  height: 200px;
+}
+.form_table {
+  display: flex;
+  padding: 20px;
+
+}
+
+.form_label {
+  flex-basis: 20%;
+}
+
+.form_input {
+  flex-basis: 80%;
+  width: 100%;
+}
+
+.form_input input {
+  width: 100%;
+}
+
+tr:hover {
+  background-color: #e7e7e7;
+}
