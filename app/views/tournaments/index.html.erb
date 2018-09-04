@@ -18,7 +18,7 @@
     <% else %>
       <% @tournaments.each do |tourn| %>
         <tr data-id="<%= tourn.id %>">
-          <th scope="row" class="<%= @picks.include?(index + 1) ? "pick_number" : '' %>"><%= index + 1 %></th>
+          <!-- <th scope="row"></th> -->
           <td><%= tourn.name %></td>
           <td><%= tourn.date_played %></td>
           <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
