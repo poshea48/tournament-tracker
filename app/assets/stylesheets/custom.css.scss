@@ -14,8 +14,7 @@ body {
 .form_layout {
   display: flex;
   flex-direction: column;
-  width: 500px;
-  height: 200px;
+  flex-basis: 500px;
 }
 .form_table {
   display: flex;

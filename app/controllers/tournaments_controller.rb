@@ -3,7 +3,7 @@ class TournamentsController < ApplicationController
   before_action :set_tournament, only: [:show, :edit]
 
   def index
-    @tournaments = Tournament.all 
+    @tournaments = Tournament.all
   end
 
   def new
@@ -16,6 +16,7 @@ class TournamentsController < ApplicationController
       flash[:success] = "Tournament has been created"
       redirect_to tournaments_path
     else
+      flash.now[:danger] = "Tournament has not been created"
       render :new
     end
   end
