@@ -13,23 +13,22 @@
   <tbody>
     <% if @tournaments.empty? %>
       <tr>
-        <td colspan="4">No tournaments</td>
+        <td colspan="4">No Tournaments</td>
       </tr>
     <% else %>
       <% @tournaments.each do |tourn| %>
         <tr data-id="<%= tourn.id %>">
           <!-- <th scope="row"></th> -->
-          <td><%= tourn.name %></td>
+          <td><%= link_to tourn.name, tournament_path(tourn)%></td>
           <td><%= tourn.date_played %></td>
           <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
-          <td>
-            <% if tourn.closed %>
-              This tournament is closed
-            <% else %>
+          <% if tourn.closed %>
+            <td>This tournament is closed</td>
+          <% else %>
+            <td class="action-row">
               <%= button_to "Join Tournament", "#", class: "btn btn-sm btn-primary" %>
-              <%= button_to "Remove tourn", "#", class: "btn btn-sm btn-danger" %>
-            <% end %>
-          </td>
+            </td>
+          <% end %>
         </tr>
       <% end %>
     <% end %>

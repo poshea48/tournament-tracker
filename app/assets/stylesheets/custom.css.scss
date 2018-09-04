@@ -35,6 +35,14 @@ body {
   width: 100%;
 }
 
+/******  Tournament Listings *******/
+table {
+  margin-left: 10px;
+}
 tr:hover {
   background-color: #e7e7e7;
+}
+
+.action-row {
+  display: flex;
 }
