@@ -5,6 +5,9 @@ body {
   font-size: 14px;
   font-family: sans-serif;
 }
+
+
+
 .form_container {
   display: flex;
   justify-content: center;
@@ -45,4 +48,15 @@ tr:hover {
 
 .action-row {
   display: flex;
+}
+
+/**********  Show Tournament *********/
+.tournament-play-links {
+  display: flex;
+  justify-content: center;
+  a {
+    text-decoration: none;
+    margin: 10px;
+
+  }
 }

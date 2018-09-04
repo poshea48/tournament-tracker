@@ -1,2 +1,23 @@
-<h1>Tournaments#show</h1>
-<p>Find me in app/views/tournaments/show.html.erb</p>
+<div class="tournament_title">
+  <h2 class="text-center"><%= @tournament.name %></h1>
+  <h3 class="text-center"><%= @tournament.date_played %></h3>
+</div>
+<div class="tournament-play-links">
+  <%= link_to "Pool Play", "#" %>
+  <%= link_to "Playoffs", "#" %>
+</div>
+<table class="table text-center">
+  <thead>
+    <tr>
+      <th scope="col">rank</th>
+      <th scope="col">Team</th>
+      <th class="col">Points</th>
+      <th class="col">Latest Results</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="4">No Teams added yet</td>
+    </tr>
+  </tbody>
+</table>
