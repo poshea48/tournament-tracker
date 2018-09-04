@@ -27,6 +27,12 @@ class TournamentsController < ApplicationController
   def edit
   end
 
+  protected
+  def resource_not_found
+    flash[:danger] = "The tournament you are looking for could not be found"
+    redirect_to root_path
+  end
+
   private
 
     def set_tournament
