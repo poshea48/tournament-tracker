@@ -1,6 +1,6 @@
 class TournamentsController < ApplicationController
 
-  before_action :set_tournament, only: [:show, :edit]
+  before_action :set_tournament, only: [:show, :edit, :update]
 
   def index
     @tournaments = Tournament.all
@@ -26,6 +26,17 @@ class TournamentsController < ApplicationController
 
   def edit
   end
+
+  def update
+    @tournament.update(tournament_params)
+    if @tournament.save
+      flash[:success] = "Tournament has been updated"
+      redirect_to tournament_path(@tournament)
+    else
+      flash.now[:danger] = "Tournament has not been updated"
+      render :edit
+    end
+  end 
 
   protected
   def resource_not_found

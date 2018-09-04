@@ -18,10 +18,16 @@
         </div>
       </div>
       <div class="form_table">
-        <div class="button">
-          <%= f.submit "Create Tournament", class: "btn btn-primary btn-lg pull-left" %>
+        <div class="form_button">
+          <%= f.submit class: "btn btn-primary btn-sm pull-left" %>
         </div>
-        <%= link_to "Cancel", root_path %>
+        <div class="form_button">
+          <% if @tournament.new_record? %>
+            <%= link_to "Cancel", root_path %>
+          <% else %>
+            <%= link_to "Cancel", tournament_path(@tournament) %>
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>
