@@ -54,6 +54,17 @@ tr:hover {
   display: flex;
 }
 
+#delete {
+  color: #e17e8e;
+  margin-left: 20%;
+  opacity: .8;
+
+}
+
+#delete:hover {
+  opacity: 1;
+}
+
 /**********  Show Tournament *********/
 .tournament-play-links {
   display: flex;

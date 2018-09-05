@@ -23,7 +23,11 @@
           <td><%= tourn.date_played %></td>
           <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
           <% if tourn.closed %>
-            <td>This tournament is closed</td>
+            <td class="action-row">
+              <%= link_to tournament_path(tourn), id: "delete", method: "delete", data: { confirm: "Are you sure" } do %>
+                <i class="fa fa-trash fa-2x"></i>
+              <% end %>
+            </td>
           <% else %>
             <td class="action-row">
               <%= button_to "Join Tournament", "#", class: "btn btn-sm btn-primary" %>

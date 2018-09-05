@@ -1,6 +1,7 @@
+require 'pry'
 class TournamentsController < ApplicationController
 
-  before_action :set_tournament, only: [:show, :edit, :update]
+  before_action :set_tournament, only: [:show, :edit, :update, :destroy]
 
   def index
     @tournaments = Tournament.all
@@ -33,10 +34,20 @@ class TournamentsController < ApplicationController
       flash[:success] = "Tournament has been updated"
       redirect_to tournament_path(@tournament)
     else
-      flash.now[:danger] = "Tournament has not been updated"
+      flash[:danger] = "Tournament has not been updated"
       render :edit
     end
-  end 
+  end
+
+  def destroy
+    if @tournament.closed && @tournament.destroy
+      flash[:info] = "Tournament has been deleted"
+      redirect_to tournaments_path
+    else
+      flash[:danger] = "Tournament has not been deleted.  It must be closed first"
+      redirect_to tournaments_path
+    end
+  end
 
   protected
   def resource_not_found
