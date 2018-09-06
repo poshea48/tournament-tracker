@@ -4,14 +4,15 @@
 body {
   font-size: 14px;
   font-family: sans-serif;
+  height: 100vh;
 }
-
-
 
 .form_container {
   display: flex;
+  max-width: 800px;
+  margin: 50px auto;
   justify-content: center;
-  border: 1px solid dodgerblue;
+  border: 2px solid dodgerblue;
   border-radius: 5px;
 }
 .form_layout {
@@ -75,3 +76,59 @@ tr:hover {
 
   }
 }
+
+/************  Sign up form ************/
+#signup_form {
+  input, textarea, select, .uneditable-input {
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  input {
+    height: auto !important;
+  }
+
+  .field_with_errors {
+    input {
+      border-color: red;
+    }
+  }
+}
+
+
+// .signup_container {
+//   max-width: 500px;
+//   margin: 0 auto;
+// }
+//
+// .form_row {
+//   display: flex;
+//   flex-basis: 500px;
+//   flex-wrap: wrap;
+// }
+//
+// .signup_form {
+//   display: flex;
+// }
+//
+// .field {
+//   width: 100%;
+//   padding: 10px;
+//   margin-top: 10px;
+//   border-radius: 10px;
+//   border: 1px solid #e7e7e7;
+// }
+//
+// .name {
+//   width: 50%;
+// }
+//
+// .name:first {
+//   margin-right: 1%;
+// }
+//
+// .field_with_errors {
+//   width: 100%;
+// }
