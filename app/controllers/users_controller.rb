@@ -10,7 +10,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
     if @user.save(user_params)
       flash[:success] = "You have signed up successfully"
       session[:user_id] = @user.id

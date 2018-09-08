@@ -7,6 +7,14 @@ body {
   height: 100vh;
 }
 
+/*****  Navbar ******/
+.nav > li > span {
+  position: relative;
+  display: block;
+  padding: 15px 15px;
+  color: #777;
+}
+
 .form_container {
   display: flex;
   max-width: 800px;
@@ -57,7 +65,6 @@ tr:hover {
 
 #delete {
   color: #e17e8e;
-  margin-left: 20%;
   opacity: .8;
 
 }
@@ -98,37 +105,37 @@ tr:hover {
 }
 
 
-// .signup_container {
-//   max-width: 500px;
-//   margin: 0 auto;
-// }
-//
-// .form_row {
-//   display: flex;
-//   flex-basis: 500px;
-//   flex-wrap: wrap;
-// }
-//
-// .signup_form {
-//   display: flex;
-// }
-//
-// .field {
-//   width: 100%;
-//   padding: 10px;
-//   margin-top: 10px;
-//   border-radius: 10px;
-//   border: 1px solid #e7e7e7;
-// }
-//
-// .name {
-//   width: 50%;
-// }
-//
-// .name:first {
-//   margin-right: 1%;
-// }
-//
-// .field_with_errors {
-//   width: 100%;
-// }
+.signup_container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form_row {
+  display: flex;
+  flex-basis: 500px;
+  flex-wrap: wrap;
+}
+
+.signup_form {
+  display: flex;
+}
+
+.field {
+  padding: 10px;
+  flex: 1;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #e7e7e7;
+}
+
+.name {
+  width: 50%;
+}
+
+.name:first {
+  margin-right: 1%;
+}
+
+.field_with_errors {
+  width: 100%;
+}

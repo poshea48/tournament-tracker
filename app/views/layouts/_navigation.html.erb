@@ -14,7 +14,13 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Sign up", signup_path %></li>
+        <% if user_signed_in? %>
+          <li><span>Signed in as <%= User.find(session[:user_id]).email %></span></li>
+          <li><%= link_to "Sign out", signout_path %></li>
+        <% else %>
+          <li><%= link_to "Sign up", signup_path %></li>
+          <li><%= link_to "Sign in", signin_path %></li>
+        <% end %>
         <li class="active">
           <%= link_to "Players", "#" %>
         </li>
