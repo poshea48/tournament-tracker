@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by_email(params[:session][:email])
     if @user && @user.authenticate(params[:session][:password])
-      log_in @user 
+      log_in @user
       flash[:success] = "You have logged in successfully"
       redirect_to tournaments_path
     else
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user_id] = nil
+    log_out 
     flash[:info] = "You have logged out successfully"
     redirect_to tournaments_path
   end

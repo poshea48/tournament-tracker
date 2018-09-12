@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit]
 
   def index
+    redirect_to root_path
   end
 
   def new
@@ -11,8 +12,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save(user_params)
+      log_in @user
       flash[:success] = "You have signed up successfully"
-      session[:user_id] = @user.id
+      # session[:user_id] = @user.id
       redirect_to tournaments_path
     else
       flash.now[:danger] = "You have not signed up successfully"
