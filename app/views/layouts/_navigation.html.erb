@@ -15,11 +15,11 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
         <% if user_signed_in? %>
-          <li><span>Signed in as <%= User.find(session[:user_id]).email %></span></li>
-          <li><%= link_to "Sign out", signout_path %></li>
+          <li><span>logged in as <%= User.find(session[:user_id]).email %></span></li>
+          <li><%= link_to "Log out", logout_path %></li>
         <% else %>
           <li><%= link_to "Sign up", signup_path %></li>
-          <li><%= link_to "Sign in", signin_path %></li>
+          <li><%= link_to "Log in", login_path %></li>
         <% end %>
         <li class="active">
           <%= link_to "Players", "#" %>
