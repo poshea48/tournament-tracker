@@ -10,6 +10,7 @@ RSpec.feature "Log Users out" do
     fill_in "Email", with: @user.email
     fill_in "Password", with: 'password'
     click_button "Log in"
+
   end
 
   scenario "successfully" do
@@ -18,6 +19,13 @@ RSpec.feature "Log Users out" do
 
     expect(page).to have_content("You have logged out successfully")
     expect(page).not_to have_link("Log out")
+    expect(current_path).to eq(tournaments_path)
+  end
+
+  scenario "must be logged in to log out" do
+    visit '/'
+    click_link "Log out"
+    visit '/logout'
     expect(current_path).to eq(tournaments_path)
   end
 end

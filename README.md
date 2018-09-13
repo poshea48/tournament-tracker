@@ -1,24 +1,15 @@
-# README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Need to dos....
+  - Implement remember me test
+  - admin access
+  - non-admin access
+  - add teams to tournament
+  - cap # of teams, close registration
+  - pool-play page, options of which style of play
+  - game results with point diff.
+  - rankings
+  - pool play ends => seed for playoffs
+  - playoff bracket with teams
+  - results
+  - winner and points distributed
+  - close tournament 
