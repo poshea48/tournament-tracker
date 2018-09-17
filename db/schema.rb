@@ -10,15 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_12_201828) do
+ActiveRecord::Schema.define(version: 2018_09_17_222905) do
 
   create_table "tournaments", force: :cascade do |t|
     t.string "name"
-    t.string "date_played"
+    t.string "date"
     t.boolean "registration_open", default: true
     t.boolean "closed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "tournament_type"
   end
 
   create_table "users", force: :cascade do |t|

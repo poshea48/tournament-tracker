@@ -7,6 +7,7 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Date</th>
+      <th scope="col">Type</th>
       <th scope="col">Registration</th>
       <th scope="col">Action</th>
     </tr>
@@ -21,7 +22,8 @@
         <tr data-id="<%= tourn.id %>">
           <!-- <th scope="row"></th> -->
           <td><%= link_to tourn.name, tournament_path(tourn)%></td>
-          <td><%= tourn.date_played %></td>
+          <td><%= tourn.date %></td>
+          <td><%= tourn.tournament_type == 'kob' ? 'KOB' : 'Team' %></td>
           <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
           <% if tourn.closed %>
             <td class="action-row">

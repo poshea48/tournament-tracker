@@ -65,7 +65,7 @@ class TournamentsController < ApplicationController
     end
 
     def tournament_params
-      params.require(:tournament).permit(:name, :date_played, :registration_open, :closed)
+      params.require(:tournament).permit(:name, :date, :tournament_type, :registration_open, :closed)
     end
 
     def set_user

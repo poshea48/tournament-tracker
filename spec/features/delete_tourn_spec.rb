@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Delete a Tournament" do
   before do
-    @tournament = Tournament.create(name: "Tournament One", date_played: "9/5/2018", closed: true)
+    @tournament = Tournament.create(name: "Tournament One", date: "9/5/2018", tournament_type: 'kob', closed: true)
     @admin = User.create({ first_name: "Admin", last_name: "User",
                           email: "admin@example.com", password: 'password',
                           password_confirmation: 'password',
@@ -32,7 +32,7 @@ RSpec.feature "Delete a Tournament" do
 
     expect(page).not_to have_link("delete")
     expect(page).to have_content(@tournament.name)
-    expect(page).to have_content(@tournament.date_played)
+    expect(page).to have_content(@tournament.date)
   end
 
   # scenario "A non-admin user tries to delete a tournament" do

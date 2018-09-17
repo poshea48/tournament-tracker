@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Edit Tournament" do
   before do
-    @tournament = Tournament.create(name: "Tournament One", date_played: "9/5/2018")
+    @tournament = Tournament.create(name: "Tournament One", date: "9/5/2018", tournament_type: 'kob')
     @admin = User.create({ first_name: "Admin", last_name: "User",
                           email: "admin@example.com", password: 'password',
                           password_confirmation: 'password',
@@ -24,7 +24,7 @@ RSpec.feature "Edit Tournament" do
     click_link "Edit"
 
     fill_in "Name", with: "Updated Tournament One"
-    fill_in "Date played", with: "9/8/2018"
+    fill_in "Date", with: "9/8/2018"
     click_button "Update Tournament"
 
     expect(page).to have_content "Tournament has been updated"
@@ -37,7 +37,7 @@ RSpec.feature "Edit Tournament" do
     click_link "Edit"
 
     fill_in "Name", with: ""
-    fill_in "Date played", with: "9/8/2018"
+    fill_in "Date", with: "9/8/2018"
     click_button "Update Tournament"
 
     expect(page).to have_content "Tournament has not been updated"

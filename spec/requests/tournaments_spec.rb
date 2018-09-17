@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Tournaments", type: :request do
   before do
-    @tournament = Tournament.create(name: "Tournament One", date_played: "9/5/2018")
+    @tournament = Tournament.create(name: "Tournament One", date: "9/5/2018", tournament_type: 'kob')
   end
 
   describe 'GET /tournaments/:id' do

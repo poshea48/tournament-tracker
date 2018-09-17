@@ -17,11 +17,24 @@ RSpec.feature "Creating Tournaments" do
     click_button "Log in"
   end
 
-  scenario "An admin user creates a tournament" do
+  scenario "An admin user creates a KOB tournament" do
     visit "/"
     click_link "Create New Tournament"
     fill_in "Name", with: "Test Tournament"
     fill_in "Date", with: "September 3, 2018"
+    choose("KOB")
+    click_button "Create Tournament"
+
+    expect(page).to have_content("Tournament has been created")
+    expect(page.current_path).to eq(tournaments_path)
+  end
+
+  scenario "An admin user creates a Team play tournament" do
+    visit "/"
+    click_link "Create New Tournament"
+    fill_in "Name", with: "Test Tournament"
+    fill_in "Date", with: "September 3, 2018"
+    choose("Team")
     click_button "Create Tournament"
 
     expect(page).to have_content("Tournament has been created")
@@ -32,12 +45,12 @@ RSpec.feature "Creating Tournaments" do
     visit "/"
     click_link "Create New Tournament"
     fill_in "Name", with: ""
-    fill_in "Date played", with: ""
+    fill_in "Date", with: ""
     click_button "Create Tournament"
 
     expect(page).to have_content("Tournament has not been created")
     expect(page).to have_content("Name can't be blank")
-    expect(page).to have_content("Date played can't be blank")
+    expect(page).to have_content("Date can't be blank")
   end
 
   scenario "Non-admin user tries to create a tournament" do

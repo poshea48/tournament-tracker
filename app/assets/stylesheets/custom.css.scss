@@ -19,6 +19,8 @@ a {
   color: #777;
 }
 
+/******* New Tournament Form ********/
+
 .form_container {
   display: flex;
   max-width: 800px;
@@ -35,7 +37,6 @@ a {
 .form_table {
   display: flex;
   padding: 20px;
-
 }
 
 .form_label {
@@ -49,6 +50,10 @@ a {
 
 .form_input input {
   width: 100%;
+}
+
+.form_radio {
+  margin-right: 20px;
 }
 
 .form_button {

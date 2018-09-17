@@ -1,6 +1,7 @@
 <div class="tournament_title">
-  <h2 class="text-center"><%= @tournament.name %></h1>
-  <h3 class="text-center"><%= @tournament.date_played %></h3>
+  <h2 class="text-center"><%= @tournament.name %> - <%= @tournament.date %></h1>
+  <h3 class="text-center">TYPE: <%= @tournament.tournament_type == 'kob' ? 'KOB' : 'Team' %></h3>
+
   <% if @user && @user.admin? %>
     <h4 class="text-center"><%= link_to "Edit", edit_tournament_path(@tournament) %></h3>
   <% end %>
@@ -13,14 +14,22 @@
   <thead>
     <tr>
       <th scope="col">rank</th>
-      <th scope="col">Team</th>
+      <% if @tournament.tournament_type == 'kob' %>
+        <th scope="col">Player</th>
+      <% else %>
+        <th scope="col">Team</th>
+      <% end %>
       <th class="col">Points</th>
       <th class="col">Latest Results</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td colspan="4">No Teams added yet</td>
+      <% if @tournament.tournament_type == 'kob' %>
+        <td colspan="4">No Players added yet</td>
+      <% else %>
+        <td colspan="4">No Teams added yet</td>
+      <% end %>
     </tr>
   </tbody>
 </table>
