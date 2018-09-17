@@ -1,7 +1,23 @@
 require 'rails_helper'
 
 RSpec.feature "Creating Tournaments" do
-  scenario "A user creates a tournament" do
+  before do
+    @admin = User.create({ first_name: "Admin", last_name: "User",
+                          email: "admin@example.com", password: 'password',
+                          password_confirmation: 'password',
+                          admin: true })
+
+    @non_admin = User.create({ first_name: "Non-admin", last_name: "User",
+                          email: "user@example.com", password: 'password',
+                          password_confirmation: 'password' })
+    visit '/'
+    click_link "Log in"
+    fill_in "Email", with: @admin.email
+    fill_in "Password", with: 'password'
+    click_button "Log in"
+  end
+
+  scenario "An admin user creates a tournament" do
     visit "/"
     click_link "Create New Tournament"
     fill_in "Name", with: "Test Tournament"
@@ -12,7 +28,7 @@ RSpec.feature "Creating Tournaments" do
     expect(page.current_path).to eq(tournaments_path)
   end
 
-  scenario "A user fails to create a new tournament" do
+  scenario "An admin user fails to create a new tournament" do
     visit "/"
     click_link "Create New Tournament"
     fill_in "Name", with: ""
@@ -22,5 +38,23 @@ RSpec.feature "Creating Tournaments" do
     expect(page).to have_content("Tournament has not been created")
     expect(page).to have_content("Name can't be blank")
     expect(page).to have_content("Date played can't be blank")
+  end
+
+  scenario "Non-admin user tries to create a tournament" do
+    visit '/'
+    click_link "Log out"
+
+    visit '/'
+    click_link "Log in"
+    fill_in "Email", with: @non_admin.email
+    fill_in "Password", with: 'password'
+    click_button "Log in"
+
+    visit '/'
+    expect(page).not_to have_link "Create New Tournament"
+
+    visit '/tournaments/new'
+    expect(page).to have_content("You do not have access to that page")
+    expect(current_path).to eq(root_path)
   end
 end

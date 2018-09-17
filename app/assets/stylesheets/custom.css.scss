@@ -7,6 +7,10 @@ body {
   height: 100vh;
 }
 
+a {
+    text-decoration: none !important;
+}
+
 /*****  Navbar ******/
 .nav > li > span {
   position: relative;
@@ -55,8 +59,13 @@ body {
 table {
   margin-left: 10px;
 }
-tr:hover {
+
+tbody tr:hover {
   background-color: #e7e7e7;
+}
+
+td a {
+  text-decoration: none;
 }
 
 .action-row {

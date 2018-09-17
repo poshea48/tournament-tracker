@@ -10,11 +10,24 @@ RSpec.describe TournamentsController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns http success" do
+    it "returns redirect with non-admin" do
+      get :new
+      expect(response).to have_http_status(302)
+    end
+
+    it "returns http success with admin user" do
+      @admin = User.create({ id: 1, first_name: "Admin", last_name: "User",
+                            email: "admin@example.com", password: 'password',
+                            password_confirmation: 'password',
+                            admin: true })
+      log_in(@admin)
       get :new
       expect(response).to have_http_status(:success)
     end
+
   end
+
+
   #
   # describe "GET #show" do
   #   it "returns http success" do

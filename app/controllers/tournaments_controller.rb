@@ -2,12 +2,15 @@ require 'pry'
 class TournamentsController < ApplicationController
 
   before_action :set_tournament, only: [:show, :edit, :update, :destroy]
+  before_action :set_user
+  before_action :restrict_access, only: [:new, :create, :edit, :destroy]
 
   def index
     @tournaments = Tournament.all
   end
 
   def new
+
     @tournament = Tournament.new
   end
 
@@ -63,5 +66,16 @@ class TournamentsController < ApplicationController
 
     def tournament_params
       params.require(:tournament).permit(:name, :date_played, :registration_open, :closed)
+    end
+
+    def set_user
+      @user = current_user
+    end
+
+    def restrict_access
+      unless @user && @user.admin?
+        flash[:danger] = "You do not have access to that page"
+        redirect_to root_path
+      end
     end
 end

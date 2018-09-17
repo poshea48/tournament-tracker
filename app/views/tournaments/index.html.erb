@@ -1,4 +1,6 @@
-<%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
+<% if @user && @user.admin? %>
+  <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
+<% end %>
 
 <table class="table row">
   <thead>
