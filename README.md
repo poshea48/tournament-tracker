@@ -1,8 +1,8 @@
 
 Need to dos....
   - Implement remember me test
-  - admin access
-  - non-admin access
+  x admin access (done)
+  x non-admin access (done)
   - add teams to tournament
   - cap # of teams, close registration
   - pool-play page, options of which style of play
@@ -12,4 +12,4 @@ Need to dos....
   - playoff bracket with teams
   - results
   - winner and points distributed
-  - close tournament 
+  - close tournament
