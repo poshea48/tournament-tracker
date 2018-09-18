@@ -1,4 +1,3 @@
-require 'pry'
 class TournamentsController < ApplicationController
 
   before_action :set_tournament, only: [:show, :edit, :update, :destroy]
