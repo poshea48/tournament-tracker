@@ -1,5 +1,4 @@
 class TournamentsController < ApplicationController
-
   before_action :set_tournament, only: [:show, :edit, :update, :destroy]
   before_action :set_user
   before_action :restrict_access, only: [:new, :create, :edit, :destroy]

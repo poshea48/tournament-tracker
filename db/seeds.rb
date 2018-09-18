@@ -10,5 +10,5 @@ User.create(first_name: "Paul",
             last_name: "OShea",
             email: "poshea48@msn.com",
             admin: true,
-            password: 'track@@$$this',
+            password: ,
             )

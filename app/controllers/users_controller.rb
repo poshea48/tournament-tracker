@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit]
+  before_action :make_read_only
 
   def index
     redirect_to root_path
@@ -29,6 +30,9 @@ class UsersController < ApplicationController
   end
 
   private
+
+
+
 
     def set_user
       @user = User.find(params[:id])
