@@ -1,0 +1,21 @@
+<h2 class="text-center">Add Player to Tournament</h2>
+<div id="signup_form">
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+      <%= render 'shared/errors', object: @user %>
+      <h3>Player info</h3>
+      <%= form_tag(join_path(@tournament.id), method: :post)  do %>
+        <%= label_tag :first_name %>
+        <%= text_field_tag :first_name %>
+
+        <%= label_tag :last_name %>
+        <%= text_field_tag :last_name %>
+
+        <%= label_tag :email %>
+        <%= email_field_tag :email %>
+
+        <%= submit_tag "Add Player", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>

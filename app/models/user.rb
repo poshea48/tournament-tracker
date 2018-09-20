@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   attr_accessor :remember_token
 
+  has_many :teams
+  has_many :tournaments, through: :teams 
+
   has_secure_password
 
   validates :first_name, presence: true

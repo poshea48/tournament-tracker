@@ -13,3 +13,12 @@ Need to dos....
   - results
   - winner and points distributed
   - close tournament
+
+Team
+  - belongs_to :user, index: true
+  - belongs_to :tournament, index: true
+  -
+  - user_id
+  - partner_id (could be blank for kob)
+  - team_name
+  - tournament_id

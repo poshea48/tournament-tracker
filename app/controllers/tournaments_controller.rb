@@ -1,14 +1,14 @@
+require 'pry'
 class TournamentsController < ApplicationController
-  before_action :set_tournament, only: [:show, :edit, :update, :destroy]
+  before_action :set_tournament, only: [:show, :edit, :join, :add_to_tournament, :update, :destroy]
   before_action :set_user
-  before_action :restrict_access, only: [:new, :create, :edit, :destroy]
+  before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
 
   def index
     @tournaments = Tournament.all
   end
 
   def new
-
     @tournament = Tournament.new
   end
 
@@ -27,6 +27,23 @@ class TournamentsController < ApplicationController
   end
 
   def edit
+  end
+
+  def join
+    @player = User.new
+  end
+
+  def add_to_tournament
+    @player = User.find_by_email(params[:email])
+    if @player
+      team = Team.create(user_id: @player.id, tournament_id: @tournament.id,
+                        team_name: "#{@player.first_name} #{@player.last_name}" )
+      flash[:success] = "Player has been added"
+      redirect_to tournament_path(@tournament)
+    else
+      flash.now[:danger] = "Player could not be found"
+      render :join
+    end
   end
 
   def update
