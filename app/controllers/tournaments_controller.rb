@@ -24,6 +24,7 @@ class TournamentsController < ApplicationController
   end
 
   def show
+    @teams = @tournament.sort_teams_by_points
   end
 
   def edit

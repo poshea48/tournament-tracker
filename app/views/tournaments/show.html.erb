@@ -24,7 +24,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @tournament.teams.each_with_index do |team, i| %>
+    <% @teams.each_with_index do |team, i| %>
     <tr>
       <% if @tournament.tournament_type == 'kob' %>
         <% if @tournament.teams.empty? %>
@@ -32,7 +32,7 @@
         <% else %>
           <td><%= i + 1%></td>
           <td><%= link_to team.team_name, user_path(team.user_id) %></td>
-          <td><%= team.tally_points %></td>
+          <td><%= team.total_points %></td>
           <td>N/A</td>
         <% end %>
       <% else %>

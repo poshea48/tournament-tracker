@@ -47,6 +47,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
+  gem 'database_cleaner'
 end
 
 group :development do
@@ -63,6 +64,7 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 group :production do

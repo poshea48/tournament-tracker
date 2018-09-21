@@ -3,7 +3,8 @@ Need to dos....
   - Implement remember me test
   x admin access (done)
   x non-admin access (done)
-  - add teams to tournament
+  x add teams to tournament
+  - sort teams based on points
   - cap # of teams, close registration
   - pool-play page, options of which style of play
   - game results with point diff.
@@ -13,12 +14,3 @@ Need to dos....
   - results
   - winner and points distributed
   - close tournament
-
-Team
-  - belongs_to :user, index: true
-  - belongs_to :tournament, index: true
-  -
-  - user_id
-  - partner_id (could be blank for kob)
-  - team_name
-  - tournament_id
