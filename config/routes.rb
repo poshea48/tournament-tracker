@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get '/tournaments/:id/edit/join', to: 'tournaments#join', as: :join
   post '/tournaments/:id/edit/join', to: 'tournaments#add_to_tournament'
+  get '/tournaments/:id/pool_play', to: 'tournaments#pool_play', as: :pool_play
   resources :users
   get '/signup' => 'users#new'
 
