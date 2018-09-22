@@ -1,9 +1,9 @@
 require 'pry'
 class TournamentsController < ApplicationController
-  before_action :set_tournament, only: [:show, :edit, :join, :add_to_tournament, :update, :destroy]
+  before_action :set_tournament, only: [:show, :edit, :join, :add_to_tournament, :update, :pool_play, :destroy]
   before_action :set_user
   before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
-
+  before_action :set_teams, only: [:show, :pool_play]
   def index
     @tournaments = Tournament.all
   end
@@ -24,7 +24,6 @@ class TournamentsController < ApplicationController
   end
 
   def show
-    @teams = @tournament.sort_teams_by_points
   end
 
   def edit
@@ -56,6 +55,14 @@ class TournamentsController < ApplicationController
       flash[:danger] = "Tournament has not been updated"
       render :edit
     end
+  end
+
+  def pool_play
+    if @tournament.registration_open
+      flash[:danger] = "You can not enter, registration is still open"
+      redirect_to tournament_path(@tournament)
+    end
+
   end
 
   def destroy
@@ -93,5 +100,9 @@ class TournamentsController < ApplicationController
         flash[:danger] = "You do not have access to that page"
         redirect_to root_path
       end
+    end
+
+    def set_teams
+      @teams = @tournament.sort_teams_by_points
     end
 end
