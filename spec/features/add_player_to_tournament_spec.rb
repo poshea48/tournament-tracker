@@ -20,7 +20,7 @@ RSpec.feature "Add player" do
     click_button "Log in"
   end
 
-  scenario "Admin user adds a player to a KOB tournament" do
+  scenario "Admin user adds a player to a KOB tournament from index" do
     visit '/'
     click_link("Add", match: :first)
 
@@ -38,4 +38,8 @@ RSpec.feature "Add player" do
     expect(page).to have_content("#{@admin.first_name.capitalize} #{@admin.last_name.capitalize}")
     expect(current_path).to eq(tournament_path(@tournament))
   end
+
+  # scenario "Admin user adds a player to a KOB tournament from show" do
+  # end
+
 end

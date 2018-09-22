@@ -4,7 +4,7 @@ Need to dos....
   x admin access (done)
   x non-admin access (done)
   x add teams to tournament
-  - sort teams based on points
+  x sort teams based on points
   - cap # of teams, close registration
   - pool-play page, options of which style of play
   - game results with point diff.
