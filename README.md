@@ -6,7 +6,17 @@ Need to dos....
   x add teams to tournament
   x sort teams based on points
   x cap # of teams, close registration
-  - pool-play page, options of which style of play
+  - pool-play page
+    - pool-play db
+      - tournament_id, court_id, games (team_id vs team_id),
+        winner, score,
+    - pool-play controller (index, edit, update)
+      - index => create games if not already set up session?
+      - pool-play page (index)
+      - results form (edit)
+    - assigns teams to court
+    - randomly select games on each court
+    - alert("Happy with this selection?")
   - game results with point diff.
   - rankings
   - pool play ends => seed for playoffs

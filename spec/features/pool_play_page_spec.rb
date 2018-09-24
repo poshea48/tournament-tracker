@@ -29,9 +29,11 @@ RSpec.feature "Visit KOB Pool Play Page" do
     fill_in "Password", with: 'password'
     click_button "Log in"
     visit "/tournaments/#{@tournament.id}"
+    click_link "Close Registration"
   end
 
   scenario "User tries to enter pool play with open registration" do
+    click_link "Open Registration"
     click_link "Pool Play"
 
     expect(page).to have_link("Close Registration")
@@ -39,9 +41,17 @@ RSpec.feature "Visit KOB Pool Play Page" do
   end
 
   scenario "User enters pool play successfully" do
-    click_link "Close Registration"
+    expect(page).to have_link("Open Registration")
     click_link "Pool Play"
 
     expect(current_path).to eq(pool_play_path(@tournament.id))
+  end
+
+  scenario "Enters pool play page with all matchups" do
+    click_link "Pool Play"
+
+    expect(page).to have_content("Player One/Player Four vs Player Two/Player Three")
+    expect(page).to have_content("Player One/Player Three vs Player Two/Player Four")
+    expect(page).to have_content("Player One/Player Two vs Player Three/Player Four")
   end
 end
