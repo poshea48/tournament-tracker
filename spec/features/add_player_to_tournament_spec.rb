@@ -24,7 +24,7 @@ RSpec.feature "Add player" do
     visit '/'
     click_link("Add", match: :first)
 
-    expect(current_path).to eq("/tournaments/#{@tournament.id}/edit/join")
+    expect(current_path).to eq("/tournaments/#{@tournament.id}/add_team")
     expect(page).to have_content("Player info")
     expect(page).not_to have_content("Player 1 info")
     expect(page).not_to have_content("Player 2 info")

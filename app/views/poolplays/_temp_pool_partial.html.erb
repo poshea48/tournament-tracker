@@ -1,0 +1,10 @@
+<% object.keys.each do |court| %>
+  <h3>Court <%= court %></h3>
+  <ul>
+  <% object[court].each do |player| %>
+    <li><%= User.find(Team.find(player).user_id).first_name %></li>
+  <% end %>
+  </ul>
+<% end %>
+<br />
+<%= link_to "Use this pool", poolplay_path(@tournament.id, pool: object), method: 'post', class: "btn btn-md btn-success", data: {pool: object} %>

@@ -1,9 +1,11 @@
 require 'pry'
 class TournamentsController < ApplicationController
-  before_action :set_tournament, only: [:show, :edit, :join, :add_to_tournament, :update, :pool_play, :destroy]
+  include TournamentsHelper
+  before_action :set_tournament, only: [:show, :edit, :add_team, :add_to_tournament, :update, :pool_play, :destroy]
   before_action :set_user
   before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
   before_action :set_teams, only: [:show, :pool_play]
+
   def index
     @tournaments = Tournament.all
   end
@@ -29,8 +31,18 @@ class TournamentsController < ApplicationController
   def edit
   end
 
-  def join
-    @player = User.new
+  def add_team
+    unless @tournament.registration_open
+      flash[:danger] = "Registration is closed"
+      redirect_to tournament_path(@tournament)
+    end
+
+    if @tournament.tournament_type == 'kob'
+      @player = User.new
+    else
+      @player1 = User.new
+      @player2 = User.new
+    end
   end
 
   def add_to_tournament
@@ -57,14 +69,6 @@ class TournamentsController < ApplicationController
     end
   end
 
-  def pool_play
-    if @tournament.registration_open
-      flash[:danger] = "You can not enter, registration is still open"
-      redirect_to tournament_path(@tournament)
-    end
-
-  end
-
   def destroy
     if @tournament.closed && @tournament.destroy
       flash[:info] = "Tournament has been deleted"
@@ -88,7 +92,7 @@ class TournamentsController < ApplicationController
     end
 
     def tournament_params
-      params.require(:tournament).permit(:name, :date, :tournament_type, :registration_open, :closed)
+      params.require(:tournament).permit(:name, :date, :tournament_type, :registration_open, :poolplay_started, :poolplay_finished, :closed)
     end
 
     def set_user

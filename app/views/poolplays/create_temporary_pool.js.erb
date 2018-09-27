@@ -1,0 +1,2 @@
+$("#temp_pool_location").text("")
+$("<%= escape_javascript(render partial: 'temp_pool_partial', locals: {object: @temp_pool_now}) %>").appendTo("#temp_pool_location")

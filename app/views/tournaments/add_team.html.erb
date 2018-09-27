@@ -4,7 +4,7 @@
     <div class="col-sm-6 col-sm-offset-3">
       <%= render 'shared/errors', object: @user %>
       <h3>Player info</h3>
-      <%= form_tag(join_path(@tournament.id), method: :post)  do %>
+      <%= form_tag(add_team_path(@tournament.id), method: :post)  do %>
         <%= label_tag :first_name %>
         <%= text_field_tag :first_name %>
 
