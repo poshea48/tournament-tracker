@@ -53,8 +53,8 @@ class TournamentsController < ApplicationController
       flash[:success] = "Player has been added"
       redirect_to tournament_path(@tournament)
     else
-      flash.now[:danger] = "Player could not be found"
-      render :join
+      flash[:danger] = "Player could not be found"
+      redirect_to tournament_path(@tournament)
     end
   end
 

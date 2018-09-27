@@ -53,6 +53,8 @@
     <% if @tournament.registration_open %>
       <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
     <% end %>
-    <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
+    <% unless @tournament.poolplay_started %>
+      <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
+    <% end %>
   </div>
 <% end %>
