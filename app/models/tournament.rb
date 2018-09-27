@@ -2,6 +2,7 @@ class Tournament < ApplicationRecord
 
   has_many :teams
   has_many :users, through: :teams
+  has_many :poolplays
 
   validates :name, presence: true
   validates :date, presence: true

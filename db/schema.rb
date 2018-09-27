@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_20_193728) do
+ActiveRecord::Schema.define(version: 2018_09_26_003121) do
+
+  create_table "poolplays", force: :cascade do |t|
+    t.integer "tournament_id"
+    t.integer "court_id"
+    t.string "team_ids"
+    t.string "winner"
+    t.string "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tournament_id"], name: "index_poolplays_on_tournament_id"
+  end
 
   create_table "teams", force: :cascade do |t|
     t.integer "user_id"
@@ -29,6 +40,8 @@ ActiveRecord::Schema.define(version: 2018_09_20_193728) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "tournament_type"
+    t.boolean "poolplay_started", default: false
+    t.boolean "poolplay_finished", default: false
   end
 
   create_table "users", force: :cascade do |t|

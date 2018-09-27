@@ -9,14 +9,10 @@ RSpec.feature "Show Tournament" do
     visit "/"
     click_link @tournament.name
 
+    expect(page).to have_content("Players")
     expect(page).to have_content(@tournament.name)
     expect(page).to have_content(@tournament.date)
     expect(page).to have_content(@tournament.tournament_type.upcase)
-
     expect(current_path).to eq(tournament_path(@tournament))
-
-    expect(page).to have_content("Players")
-    expect(page).to have_link("Pool Play")
-    expect(page).to have_link("Playoffs")
   end
 end
