@@ -11,6 +11,46 @@ a {
     text-decoration: none !important;
 }
 
+
+.score_label {
+  margin-left: 10px;
+}
+
+.score_input {
+  width: 100px;
+}
+
+.modal-content {
+  max-width: 400px;
+}
+
+#modal_button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.player_rank {
+  margin: 5px 0;
+  padding: 5px;
+  .rank {
+    margin-right: 5px;
+  }
+  .team_name {
+    display: inline-block;
+    width: 50px;
+  }
+  .diff {
+    text-align: right;
+  }
+}
+
+
 /*****  Navbar ******/
 .nav > li > span {
   position: relative;
@@ -159,6 +199,8 @@ td a {
   width: 100%;
 }
 
-// @media (max-width = 600) {
+// @media (max-width = 400) {
+//   .modal-content {
 //
+//   }
 // }

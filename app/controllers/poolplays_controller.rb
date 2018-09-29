@@ -8,6 +8,8 @@ class PoolplaysController < ApplicationController
   before_action :set_poolplay, except: [:new, :create, :create_temporary_pool]
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
+  before_action :start_playoffs
+  before_action :set_playoffs, only: [:playoffs, :leaderboard, :edit]
 
   def index
   end
@@ -34,10 +36,10 @@ class PoolplaysController < ApplicationController
   end
 
   def create
+
     if poolplay = Poolplay.save_kob_to_database(params["pool"], @tournament.id)
       flash[:success] = "Pool play has started"
       Tournament.update(@tournament.id, poolplay_started: true)
-      session[:poolplay] = poolplay
       redirect_to poolplay_path(@tournament)
     else
       flash[:danger] = "Something went wrong"
@@ -46,12 +48,106 @@ class PoolplaysController < ApplicationController
   end
 
   def edit
+    game_id = params[:pool_id] || params[:playoff_id]
+    @game = Poolplay.find(game_id)
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def update
+    game_id = params[:game_id]
+    game = Poolplay.find(params[:game_id])
+    playoffs_started = @tournament.playoffs_started
+
+    if params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
+      flash[:danger] = "Score entered incorrectly"
+      if @tournament.playoffs_started
+        redirect_to playoffs_path(@tournament)
+      else
+        redirect_to poolplay_path(@tournament)
+      end
+    else
+      game.update(poolplay_params)
+      if game.save
+        update_team_pool_differentials(game, playoffs_started)
+        flash[:success] = "Results computed"
+      else
+        flash[:danger] = "Score was not entered correctly, must be in format xx-xx"
+      end
+
+      if @tournament.playoffs_started
+        redirect_to playoffs_path(@tournament)
+      else
+        redirect_to poolplay_path(@tournament)
+      end
+    end
+  end
+
+  def leaderboard
+    @court = params["court_id"].to_i
+    courts = {}
+    @playoffs = nil
+    if @court == 100 || @court == 101
+      courts = @playoff_courts
+      @playoffs = true
+    else
+      courts = @courts
+      @playoffs = false
+    end
+    team_ids = get_teams_ids_from_court(courts[@court])
+    if @playoffs
+      @teams = @tournament.teams.select do |team|
+        team_ids.include?(team.id)
+      end.sort_by { |team| team.playoffs.to_i }.reverse
+    else
+      @teams = @tournament.teams.select do |team|
+        team_ids.include?(team.id)
+      end.sort_by { |team| team.pool_diff }.reverse
+    end
+    respond_to do |format|
+      format.html
+      format.js
+      format.json { render json: @teams }
+    end
+  end
+
+  def create_playoff_pool
+    if @tournament.poolplay_finished
+      #[[3,4,1,2], [6,7,8,9]]
+      playoff_teams = @courts.keys.map do |court|
+        team_ids = get_teams_ids_from_court(@courts[court])
+        @tournament.teams.select do |team|
+          team_ids.include?(team.id)
+        end
+      end
+      if Poolplay.create_playoffs(@tournament.id, sort_by_pool_diff(playoff_teams))
+        Tournament.update(@tournament.id, playoffs_started: true)
+      else
+        flash[:danger] = "Something went wrong"
+      end
+    end
+    redirect_to playoffs_path(@tournament)
+      # playoffs = Poolplay.create_playoffs(@tournament, sort_by_pool_diff(teams))
+  end
+
+  def playoffs
+
   end
 
   private
+    def set_tournament
+      @tournament = Tournament.find(params[:id])
+      # if session[:tournament].nil? || session[:tournament][params[:id]].nil?
+      #   @tournament = Tournament.find(params[:id])
+      #   session[:tournament] = {}
+      #   session[:tournament][@tournament.id] = @tournament
+      # else
+      #   @tournament = session[:tournament][params[:id]]
+      #   binding.pry
+      # end
+    end
 
     def start_pool_play_access
       if @tournament.poolplay_started
@@ -60,8 +156,12 @@ class PoolplaysController < ApplicationController
       end
     end
 
-    def set_tournament
-      @tournament = Tournament.find(params[:id])
+    def set_poolplay
+      @poolplay = Poolplay.where(["tournament_id = ? and version = ?", "#{@tournament.id}", "pool"])
+      if @poolplay.empty?
+        redirect_to new_poolplay_path(@tournament.id)
+      end
+      @courts = divide_pool_by_courts(@poolplay)
     end
 
     def restrict_access
@@ -78,28 +178,23 @@ class PoolplaysController < ApplicationController
       end
     end
 
-    def set_poolplay
-      if session[:poolplay].nil?
-        @poolplay = Poolplay.where("tournament_id = '#{@tournament.id}'")
-        if @poolplay.empty?
-          redirect_to new_poolplay_path(@tournament.id)
-        end
-        session[:poolplay] = @poolplay
-      else
-        @poolplay = session[:poolplay]
+    def poolplay_params
+      params.require(:poolplay).permit(:winner, :score)
+    end
+
+    def start_playoffs
+      if @poolplay.nil?
+        return
       end
-      @courts = divide_pool_by_courts(@poolplay)
-
+      if @poolplay.none? {|game| game["score"].nil? }
+        Tournament.update(@tournament.id, poolplay_finished: true)
+      end
     end
 
-    def set_teams(courts)
-      teams = courts.keys.map do |court|
-        courts[court].first["team_ids"].split("-").map do |team|
-          team.split("/")
-        end
-      end.flatten.map(&:to_i)
+    def set_playoffs
+      if @tournament.playoffs_started
+        @playoffs = Poolplay.where(["tournament_id = ? and version = ?", "#{@tournament.id}", "playoff"])
+        @playoff_courts = divide_pool_by_courts(@playoffs)
+      end
     end
-
-
-
 end

@@ -1,13 +1,11 @@
-<% unless @tournament.poolplay_started %>
-  <% link_to "Create Pools", new_poolplay_path(@tournament.id) %>
-<% else %>
+<h1 class="text-center">PLAYOFFS</h1>
 <div id="modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content flex container"></div>
   </div>
 </div>
-  <% @courts.keys.each do |court| %>
-    <h3>Court <%= court %></h3><%= link_to "Leader Board", leaderboard_path(@tournament, court_id: court), format: "js", remote: true %>
+  <% @playoff_courts.keys.each do |court| %>
+    <h3><%= court == 100 ? "Championship Court" : "Consolation Court" %></h3><%= link_to "Leader Board", leaderboard_path(@tournament, court_id: court), format: "js", remote: true %>
     <table class="pool table">
       <thead>
         <tr class="row">
@@ -18,11 +16,11 @@
         </tr>
       </thead>
       <tbody>
-        <% @courts[court].each do |game| %>
+        <% @playoff_courts[court].each do |game| %>
           <tr data-pool_id="<%= game["id"] %>" class="row">
             <td><%= create_game_title_from_team_ids(game["team_ids"]) %></td>
             <% if game["score"].nil? %>
-              <td><%= link_to "Results", results_poolplay_path(@tournament, pool_id: game["id"]), class: 'btn btn-primary btn-md', remote: true, data: { target: '#modal-window', toggle: 'modal'} %></td>
+              <td><%= link_to "Results", results_playoffs_path(@tournament, playoff_id: game["id"]), class: 'btn btn-primary btn-md', remote: true, data: { target: '#modal-window', toggle: 'modal'} %></td>
               <td></td>
               <td></td>
               <td></td>
@@ -36,11 +34,3 @@
       </tbody>
     </table>
   <% end %>
-<% end %>
-<% if @tournament.poolplay_finished %>
-  <% if @tournament.playoffs_started %>
-    <%= link_to "Playoffs", playoffs_path(@tournament), class: "btn btn-lg btn-primary" %>
-  <% else %>
-    <%= link_to "Start Playoffs", playoffs_path(@tournament), method: 'post', class: "btn btn-lg btn-primary" %>
-  <% end %>
-<% end %>

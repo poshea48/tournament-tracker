@@ -49,7 +49,7 @@ class TournamentsController < ApplicationController
     @player = User.find_by_email(params[:email])
     if @player
       team = Team.create(user_id: @player.id, tournament_id: @tournament.id,
-                        team_name: "#{@player.first_name} #{@player.last_name}" )
+                        team_name: "#{@player.first_name}" )
       flash[:success] = "Player has been added"
       redirect_to tournament_path(@tournament)
     else

@@ -1,5 +1,7 @@
 class Poolplay < ApplicationRecord
   belongs_to :tournament
+  VALID_SCORE_REGEX = /\A[2]\d+-\d{1,2}\z/
+  # validates :score, format: { with: VALID_SCORE_REGEX }
 
   default_scope { order(court_id: :asc)}
 
@@ -22,6 +24,25 @@ class Poolplay < ApplicationRecord
       games.each do |game|
         result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
                         court_id: court)
+      end
+    end
+    result.empty? ? false : result
+  end
+
+  # refactor these two methods into 1
+
+  def self.create_playoffs(tournament_id, playoff_teams)
+    # assuming only 8 players 2 courts
+    playoffs = {100 => [], 101 => []}
+    playoffs[100] << playoff_teams[0][0].id << playoff_teams[0][1].id << playoff_teams[1][0].id << playoff_teams [1][1].id
+    playoffs[101] << playoff_teams[0][2].id << playoff_teams[0][3].id << playoff_teams[1][2].id << playoff_teams [1][3].id
+    result = []
+    playoffs.keys.each do |court|
+      teams = randomly_generate_kob_teams(playoffs[court])
+      games = generate_kob_games(teams)
+      games.each do |game|
+        result << Poolplay.create!(tournament_id: tournament_id, team_ids: game,
+                        court_id: court, version: "playoff")
       end
     end
     result.empty? ? false : result
@@ -83,4 +104,5 @@ class Poolplay < ApplicationRecord
     def self.randomly_generate_kob_teams(group)
       group.permutation(2).to_a.map { |team| team.sort() }.uniq
     end
+
 end

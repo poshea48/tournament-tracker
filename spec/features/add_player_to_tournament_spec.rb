@@ -35,7 +35,7 @@ RSpec.feature "Add player" do
     click_button "Add Player"
 
     expect(page).to have_content("Player has been added")
-    expect(page).to have_content("#{@admin.first_name.capitalize} #{@admin.last_name.capitalize}")
+    expect(page).to have_content("#{@admin.first_name.capitalize}")
     expect(current_path).to eq(tournament_path(@tournament))
   end
 
