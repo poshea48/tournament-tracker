@@ -58,6 +58,11 @@ class TournamentsController < ApplicationController
   end
 
   def update
+    if @tournament.poolplay_started && params[:poolplay][:registration_open]
+      flash[:danger] = "Poolplay has already started can not open registration"
+      redirect_to tournament_path(@tournament)
+    end
+    
     @tournament.update(tournament_params)
     if @tournament.save
       flash[:success] = "Tournament has been updated"
