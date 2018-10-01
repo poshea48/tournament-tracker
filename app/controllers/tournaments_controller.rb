@@ -1,4 +1,3 @@
-require 'pry'
 class TournamentsController < ApplicationController
   include TournamentsHelper
   before_action :set_tournament, only: [:show, :edit, :add_team, :add_to_tournament, :update, :pool_play, :destroy]

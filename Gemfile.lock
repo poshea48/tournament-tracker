@@ -280,6 +280,7 @@ DEPENDENCIES
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   pg
+  pry
   puma (~> 3.11)
   rails (~> 5.2.1)
   rspec-rails

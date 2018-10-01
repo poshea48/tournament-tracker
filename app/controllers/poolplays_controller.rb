@@ -1,4 +1,3 @@
-require 'pry'
 class PoolplaysController < ApplicationController
   include PoolplaysHelper
   include TournamentsHelper
