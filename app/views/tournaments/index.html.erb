@@ -8,6 +8,7 @@
         <th scope="col">Date</th>
         <th scope="col">Type</th>
         <th scope="col">Registration</th>
+        <th scope="col">Results</th>
         <% if @user && @user.admin? %>
           <th scope="col">Action</th>
         <% end %>
@@ -26,6 +27,13 @@
             <td><%= tourn.date %></td>
             <td><%= tourn.tournament_type == 'kob' ? 'KOB' : 'Team' %></td>
             <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
+            <td>
+              <% if tourn.closed %>
+                <%= link_to "Final Results", final_results_path(tourn), remote: true, format: 'js' %>
+              <% else %>
+                N/A
+              <% end %>
+            </td>
             <% if @user && @user.admin? %>
               <% if tourn.closed %>
                 <td class="action-row">

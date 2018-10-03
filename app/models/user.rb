@@ -12,10 +12,15 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
-  validates :password, length: {minimum: 6}
+  validates :password, presence: true, on: :create, length: {minimum: 6}
 
   def admin?
     self.admin
+  end
+
+  def self.available_users(tourn_id)
+    teams_already_added = Tournament.find(tourn_id).teams.map { |team| team.user_id }
+    User.where.not(id: teams_already_added)
   end
 
   #Returns the hash digest of the given string.

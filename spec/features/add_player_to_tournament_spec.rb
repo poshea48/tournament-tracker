@@ -7,7 +7,7 @@ RSpec.feature "Add player" do
                           password_confirmation: 'password',
                           admin: true })
 
-    @non_admin = User.create({ first_name: "Non-admin", last_name: "User",
+    @non_admin = User.create({ first_name: "Nonadmin", last_name: "User",
                           email: "user@example.com", password: 'password',
                           password_confirmation: 'password' })
 
@@ -25,17 +25,18 @@ RSpec.feature "Add player" do
     click_link("Add", match: :first)
 
     expect(current_path).to eq("/tournaments/#{@tournament.id}/add_team")
-    expect(page).to have_content("Player info")
-    expect(page).not_to have_content("Player 1 info")
-    expect(page).not_to have_content("Player 2 info")
+    expect(page).to have_content("Admin")
+    expect(page).to have_content("Nonadmin")
 
-    fill_in "First name", with: @admin.first_name
-    fill_in "Last name", with: @admin.last_name
-    fill_in "Email", with: @admin.email
-    click_button "Add Player"
+    check(@admin.first_name)
+    check(@non_admin.first_name)
 
-    expect(page).to have_content("Player has been added")
+    click_button "Add Player(s)"
+
+    expect(page).to have_content("Players added")
     expect(page).to have_content("#{@admin.first_name.capitalize}")
+    expect(page).to have_content("#{@non_admin.first_name.capitalize}")
+
     expect(current_path).to eq(tournament_path(@tournament))
   end
 

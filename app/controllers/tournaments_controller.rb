@@ -1,6 +1,8 @@
 class TournamentsController < ApplicationController
   include TournamentsHelper
-  before_action :set_tournament, only: [:show, :edit, :add_team, :add_to_tournament, :update, :pool_play, :destroy]
+  include PoolplaysHelper
+
+  before_action :set_tournament, except: [:index, :new, :create]#only: [:show, :edit, :add_team, :add_to_tournament, :update, :pool_play, :destroy]
   before_action :set_user
   before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
   before_action :set_teams, only: [:show, :pool_play]
@@ -31,6 +33,7 @@ class TournamentsController < ApplicationController
   end
 
   def add_team
+    @players = User.available_users(@tournament.id)
     unless @tournament.registration_open
       flash[:danger] = "Registration is closed"
       redirect_to tournament_path(@tournament)
@@ -45,24 +48,32 @@ class TournamentsController < ApplicationController
   end
 
   def add_to_tournament
-    @player = User.find_by_email(params[:email])
-    if @player
-      team = Team.create(user_id: @player.id, tournament_id: @tournament.id,
-                        team_name: "#{@player.first_name}" )
-      flash[:success] = "Player has been added"
-      redirect_to tournament_path(@tournament)
+    if params[:players]
+      params[:players].each do |player|
+        player_id, player_name = player.split("-")
+        Team.create(user_id: player_id, tournament_id: @tournament.id,
+                  team_name: player_name )
+      end
+      flash[:success] = "#{'Player'.pluralize(params[:players].length)} added"
     else
-      flash[:danger] = "Player could not be found"
-      redirect_to tournament_path(@tournament)
+      @player = User.find_by_email(params[:email])
+      if @player
+        team = Team.create(user_id: @player.id, tournament_id: @tournament.id,
+                          team_name: "#{@player.first_name}" )
+        flash[:success] = "Player has been added"
+      else
+        flash[:danger] = "Player could not be found"
+      end
     end
+    redirect_to tournament_path(@tournament)
   end
 
   def update
-    if @tournament.poolplay_started && params[:poolplay][:registration_open]
+    if @tournament.poolplay_started && params[:poolplay] && params[:poolplay][:registration_open]
       flash[:danger] = "Poolplay has already started can not open registration"
       redirect_to tournament_path(@tournament)
     end
-    
+
     @tournament.update(tournament_params)
     if @tournament.save
       flash[:success] = "Tournament has been updated"
@@ -71,6 +82,12 @@ class TournamentsController < ApplicationController
       flash[:danger] = "Tournament has not been updated"
       render :edit
     end
+  end
+
+  def delete_team
+    Team.find(params[:team_id]).destroy
+    flash[:info] = "Team has been removed"
+    redirect_to tournament_path(@tournament)
   end
 
   def destroy
@@ -82,6 +99,8 @@ class TournamentsController < ApplicationController
       redirect_to tournaments_path
     end
   end
+
+
 
   protected
   def resource_not_found
@@ -113,4 +132,5 @@ class TournamentsController < ApplicationController
     def set_teams
       @teams = @tournament.sort_teams_by_points
     end
+
 end

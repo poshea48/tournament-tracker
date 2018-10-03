@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <% if @playoffs %>
+    <h3 class="modal-title" id="myModalLabel"><%= @court == 100 ? 'Championship' : 'Consolation'  %> Court</h3>
+  <% else %>
+    <h3 class="modal-title" id="myModalLabel">Final Results</h3>
+  <% end %>
+</div>
+
+<div class="modal-body">
+  <ul id="leader_board row">
+    <% @winners.each_with_index do |team, i| %>
+      <li class="player_rank">
+        <span class="rank"><%=(i + 1).ordinalize %> place: </span>
+        <span class="team_name"> <%= team.team_name %></span>
+      </li>
+    <% end %>
+  </ul>
+<div class="modal-footer">
+</div>

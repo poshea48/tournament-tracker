@@ -13,7 +13,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right ml-auto">
         <% if user_logged_in? %>
           <li><span>logged in as <%= User.find(session[:user_id]).email %></span></li>
           <li><%= link_to "Log out", logout_path %></li>
@@ -22,9 +22,13 @@
           <li><%= link_to "Log in", login_path %></li>
         <% end %>
         <li class="active">
-          <%= link_to "Players", "#" %>
+          <%= link_to "Players", players_path %>
         </li>
-
+        <li>
+          <% if @user && @user.admin? %>
+            <%= link_to "Create New Player", signup_path %>
+          <% end %>
+        </li>
       </ul>
     </div>
   </div>

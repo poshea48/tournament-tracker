@@ -3,18 +3,14 @@
   <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
       <%= render 'shared/errors', object: @user %>
-      <h3>Player info</h3>
-      <%= form_tag(add_team_path(@tournament.id), method: :post)  do %>
-        <%= label_tag :first_name %>
-        <%= text_field_tag :first_name %>
-
-        <%= label_tag :last_name %>
-        <%= text_field_tag :last_name %>
-
-        <%= label_tag :email %>
-        <%= email_field_tag :email %>
-
-        <%= submit_tag "Add Player", class: "btn btn-primary" %>
+      <% if @tournament.tournament_type == 'kob' %>
+        <% if @user.admin %>
+          <%= render 'admin_player_form' %>
+        <% else %>
+          <%= render 'add_player_form' %>
+        <% end %>
+      <% else %>
+        <%= render 'add_team_form' %>
       <% end %>
     </div>
   </div>

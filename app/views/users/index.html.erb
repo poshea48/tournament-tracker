@@ -1,2 +1,21 @@
-<h1>Users#index</h1>
-<p>Find me in app/views/users/index.html.erb</p>
+<div class="table-responsive-sm">
+
+  <table id="players" class="table table-sm table-hover">
+    <thead>
+      <tr class="d-flex">
+        <th class="col-sm-4">Player</th>
+        <th class="col-sm-2">Total Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @players.each do |player| %>
+      <tr class="d-flex">
+        <td class="col-sm-4"><%= player.first_name.capitalize %>  <%= player.last_name.capitalize %> </td>
+        <td class="col-sm'2"><%= player.points %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+
+</div>

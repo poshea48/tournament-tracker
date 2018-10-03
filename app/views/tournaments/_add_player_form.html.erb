@@ -1,0 +1,13 @@
+<h3>Player info</h3>
+<%= form_tag(add_team_path(@tournament.id), method: :post)  do %>
+  <%= label_tag :first_name %>
+  <%= text_field_tag :first_name %>
+
+  <%= label_tag :last_name %>
+  <%= text_field_tag :last_name %>
+
+  <%= label_tag :email %>
+  <%= email_field_tag :email %>
+
+  <%= submit_tag "Add Player", class: "btn btn-primary" %>
+<% end %>

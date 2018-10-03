@@ -54,4 +54,11 @@ User.create!([
     last_name: " ",
     email: 'steve@email.com',
     password: 'itsSteve'
-}])
+  },
+  {
+    first_name: "Jake",
+    last_name: ' ',
+    email: 'jake@email.com',
+    password: 'itsJake'
+  }
+  ])

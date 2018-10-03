@@ -12,8 +12,8 @@
   <% elsif @tournament.poolplay_started %>
     <%= link_to "Pool Play", poolplay_path(@tournament.id) %>
   <% end %>
-  <% if @tournament.poolplay_finished %>
-    <%= link_to "Playoffs", "#" %>
+  <% if @tournament.playoffs_started %>
+    <%= link_to "Playoffs", playoffs_path(@tournament) %>
   <% end %>
 </div>
 <table class="table">
@@ -27,6 +27,9 @@
       <% end %>
       <th class="col">Points</th>
       <th class="col">Latest Results</th>
+      <% if @user && @user.admin? && @tournament.registration_open %>
+        <th class="col">Remove Team</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -37,9 +40,16 @@
           <td colspan="4">No Players added yet</td>
         <% else %>
           <td><%= i + 1%></td>
-          <td><%= link_to team.team_name, user_path(team.user_id) %></td>
+          <td><%= link_to team.team_name, player_path(team.user_id) %></td>
           <td><%= team.total_points %></td>
           <td>N/A</td>
+          <% if @user && @user.admin? && @tournament.registration_open %>
+            <td>
+              <%= link_to delete_team_path(@tournament.id, team_id: team.id), method: "delete", remote: true do %>
+                <i class="fa fa-trash fa-2x text-danger" ></i>
+              <% end %>
+            </td>
+          <% end %>
         <% end %>
       <% else %>
         <td colspan="4">No Teams added yet</td>

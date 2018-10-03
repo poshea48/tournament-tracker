@@ -84,6 +84,22 @@ module PoolplaysHelper
     end
   end
 
+  def update_users_points(teams, points)
+    teams.each_with_index do |team, i|
+      user = User.find(team.user_id)
+      user.update!(points: user.points + points[i])
+    end
+  end
+
+  def points_earned_kob(num_of_teams)
+    points = [100, 50, 25, 20, 20]
+
+    until points.length == num_of_teams
+      points << 10
+    end
+    points
+  end
+
   # input [[3,4,1,2], [6,7,8,9]]
   # def sort_by_pool_diff(teams)
   #   sorted = []

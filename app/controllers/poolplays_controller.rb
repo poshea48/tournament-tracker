@@ -9,6 +9,8 @@ class PoolplaysController < ApplicationController
   before_action :validate_team_numbers, only: [:new, :create]
   before_action :start_playoffs
   before_action :set_playoffs, only: [:playoffs, :leaderboard, :edit]
+  before_action :end_tournament
+
 
   def index
   end
@@ -135,6 +137,16 @@ class PoolplaysController < ApplicationController
 
   end
 
+  def final_results
+    @winners = @tournament.final_results_list
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.json { render json: @winners }
+    end
+  end
+
   private
     def set_tournament
       @tournament = Tournament.find(params[:id])
@@ -196,4 +208,15 @@ class PoolplaysController < ApplicationController
         @playoff_courts = divide_pool_by_courts(@playoffs)
       end
     end
+
+    def end_tournament
+      if !@tournament.closed && @tournament.playoffs_started && @tournament.poolplays.none? {|pool| pool.score.nil?}
+        Tournament.update(@tournament.id, closed: true)
+        teams = @tournament.final_results_list
+        update_users_points(teams, points_earned_kob(teams.length))
+        redirect_to playoffs_path(@tournament)
+      end
+    end
+
+
 end
