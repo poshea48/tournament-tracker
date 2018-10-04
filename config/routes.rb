@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   put   '/tournaments/:id/playoffs',             to: 'poolplays#update_playoffs'
   get   '/tournametns/:id/playoffs/edit',        to: 'poolplays#edit',  as: :results_playoffs
 
-  get   '/tournaments/:id/final_results',        to: 'poolplays#final_results', as: :final_results 
+  get   '/tournaments/:id/final_results',        to: 'poolplays#final_results', as: :final_results
 
 
   # resources :users
