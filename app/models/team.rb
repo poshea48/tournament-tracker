@@ -3,8 +3,12 @@ class Team < ApplicationRecord
   belongs_to :tournament
 
   def total_points
-    player1_points = User.find(self.user_id).points
-    player2_points = (self.player2_id.nil? ? 0 : User.find(self.player2_id).points)
-    player1_points + player2_points
+    if self.tournament.tournament_type == 'kob'
+      return self.user.points
+    else
+      player1_points = self.user.points
+      player2_points = User.find(self.player2_id).points
+      return player1_points + player2_points
+    end 
   end
 end

@@ -5,12 +5,12 @@ class PoolplaysController < ApplicationController
   before_action :set_tournament
   before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
 
-  before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results]
+  before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results, :leaderboard]
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
   before_action :start_playoffs, except: [:final_results]
   # before_action :set_poolplay, only: [:index]
-  before_action :set_playoffs, only: [:playoffs, :leaderboard, :edit]
+  before_action :set_playoffs, only: [:playoffs, :edit]
   before_action :end_tournament
 
 
@@ -93,25 +93,21 @@ class PoolplaysController < ApplicationController
 
   def leaderboard
     @court = params["court_id"].to_i
-    courts = {}
-    @playoffs = nil
-    if @court == 100 || @court == 101
-      courts = @playoff_courts
-      @playoffs = true
-    else
-      courts = @courts
-      @playoffs = false
+    @in_playoffs = @court >= 100
+    pool = @tournament.poolplays.select { |pool| pool.court_id == @court }
+
+    team_ids = get_teams_ids_from_court(pool)
+    @teams = nil
+
+    @teams = @tournament.teams.select { |team| team_ids.include?(team.id) }
+      .sort do |team1, team2|
+      if @court == 100 || @court == 101
+        team2.playoffs.to_i <=> team1.playoffs.to_i
+      else
+        team2.pool_diff <=> team1.pool_diff
+      end
     end
-    team_ids = get_teams_ids_from_court(courts[@court])
-    if @playoffs
-      @teams = @tournament.teams.select do |team|
-        team_ids.include?(team.id)
-      end.sort_by { |team| team.playoffs.to_i }.reverse
-    else
-      @teams = @tournament.teams.select do |team|
-        team_ids.include?(team.id)
-      end.sort_by { |team| team.pool_diff }.reverse
-    end
+
     respond_to do |format|
       format.html
       format.js
@@ -178,7 +174,7 @@ class PoolplaysController < ApplicationController
     end
 
     def set_poolplay
-      @poolplay = Poolplay.where(["tournament_id = ? and version = ?", "#{@tournament.id}", "pool"])
+      @poolplay = @tournament.poolplays.select { |pool| pool.version == 'pool' }
       if @poolplay.empty?
         redirect_to new_poolplay_path(@tournament.id)
       end
@@ -215,15 +211,14 @@ class PoolplaysController < ApplicationController
 
     def set_playoffs # only: [:playoffs, :leaderboard, :edit]
       if @tournament.playoffs_started
-        @playoffs = Poolplay.where(["tournament_id = ? and version = ?", "#{@tournament.id}", "playoff"])
-        @playoff_courts = divide_pool_by_courts(@playoffs)
+        @playoffs = @tournament.poolplays.select { |pool| pool.version == 'playoff' }
       end
+      @playoff_courts = divide_pool_by_courts(@playoffs)
     end
 
     def end_tournament
       if !@tournament.closed && @tournament.playoffs_started && @tournament.poolplays.none? {|pool| pool.score.nil?}
         Tournament.update(@tournament.id, closed: true)
-        binding.pry
         teams = @tournament.final_results_list
         update_users_points(teams, points_earned_kob(teams.length))
         redirect_to playoffs_path(@tournament)

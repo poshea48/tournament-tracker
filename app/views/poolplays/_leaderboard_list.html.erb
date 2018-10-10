@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-  <% if @playoffs %>
+  <% if @in_playoffs %>
     <h3 class="modal-title" id="myModalLabel"><%= @court == 100 ? 'Championship' : 'Consolation'  %> Court</h3>
   <% else %>
     <h3 class="modal-title" id="myModalLabel">Leader Board: Court <%= @court  %></h3>
@@ -13,10 +13,10 @@
       <li class="player_rank">
         <span class="rank"><%= i + 1 %>.</span>
         <span class="team_name"> <%= team.team_name %></span>
-        <% if @playoffs %>
+        <% if @in_playoffs %>
           <span class="diff"> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></span>
         <% else %>
-          <span class="diff"><%= team.pool_diff == '0' ? '0' : sprintf("%+d", team.pool_diff) %></span>
+          <span class="diff"><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></span>
         <% end %>
       </li>
     <% end %>
