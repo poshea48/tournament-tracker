@@ -51,15 +51,13 @@ class TournamentsController < ApplicationController
     if params[:players]
       params[:players].each do |player|
         player_id, player_name = player.split("-")
-        Team.create(user_id: player_id, tournament_id: @tournament.id,
-                  team_name: player_name )
+        add_team_to_database(player_id, player_name)
       end
       flash[:success] = "#{'Player'.pluralize(params[:players].length)} added"
     else
       @player = User.find_by_email(params[:email])
       if @player
-        team = Team.create(user_id: @player.id, tournament_id: @tournament.id,
-                          team_name: "#{@player.first_name}" )
+        add_team_to_database(@player.id, @player.first_name)
         flash[:success] = "Player has been added"
       else
         flash[:danger] = "Player could not be found"
@@ -133,4 +131,13 @@ class TournamentsController < ApplicationController
       @teams = @tournament.sort_teams_by_points
     end
 
+    def add_team_to_database(player_id, team_name)
+      if @tournament.tournament_type = "kob"
+        Team.create(user_id: player_id, tournament_id: @tournament.id,
+                    team_name: team_name, playoffs: '0' )
+      else
+        Team.create(user_id: player_id, tournament_id: @tournament.id,
+                    team_name: team_name )
+      end
+    end
 end

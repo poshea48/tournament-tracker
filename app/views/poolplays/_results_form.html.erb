@@ -7,11 +7,17 @@
 <div class="modal-body">
   <%= render 'shared/errors', object: @game %>
   <%= form_for @game, url: { action: "update", game_id: @game.id } do |f| %>
-      <%= f.label :winner %>
-      <%= f.select :winner, team_name_with_team_number_array(@game["team_ids"]) %>
-      <%= f.label :score, class: "score_label" %>
-      <%= f.text_field :score, class: "score_input" %>
+      <div class="form-group">
+          <%= f.label :winner, class: "col-sm-4" %>
+          <span><%= f.radio_button :winner, @team_1[1] %> <%= @team_1[0] %>  </span>
+          <span><%= f.radio_button :winner, @team_2[1] %> <%= @team_2[0] %>  </span>
+      </div>
+      <div class="form-group">
+          <%= f.label :score, class: "col-sm-4" %>
+          <%= f.text_field :score, class: "score_input" %>
+      </div>
       <%= f.submit "Save changes", id: "modal_button", class: "btn btn-primary" %>
   <% end %>
+</div>
 <div class="modal-footer">
 </div>

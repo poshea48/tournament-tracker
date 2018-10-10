@@ -11,10 +11,11 @@ a {
     text-decoration: none !important;
 }
 
-
-.score_label {
-  margin-left: 10px;
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
 }
+
 
 .score_input {
   width: 100px;

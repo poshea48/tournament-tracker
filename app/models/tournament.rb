@@ -1,8 +1,8 @@
 class Tournament < ApplicationRecord
   include PoolplaysHelper
-  has_many :teams
+  has_many :teams, dependent: :destroy
   has_many :users, through: :teams
-  has_many :poolplays
+  has_many :poolplays, dependent: :destroy
 
   validates :name, presence: true
   validates :date, presence: true
@@ -12,20 +12,27 @@ class Tournament < ApplicationRecord
     self.teams.sort {|a, b| b.total_points <=> a.total_points}
   end
 
+  # final results for kob tournament
   def final_results_list
-    winners_court_team_ids = get_teams_ids_from_court(self.poolplays.select { |pool| pool.court_id == 100})
-    losers_court_team_ids = get_teams_ids_from_court(self.poolplays.select { |pool| pool.court_id == 101})
+    results = []
+    playoffs = self.poolplays.select {|pool| pool.version == 'playoff'}
+    winners_court_team_ids = get_teams_ids_from_court(playoffs.select { |pool| pool.court_id == 100})
+
     winners = winners_court_team_ids.map do |team_id|
       Team.find(team_id)
-    end.sort_by { |team| team.playoffs }.reverse
+    end.sort { |team1, team2| team2.playoffs.to_i <=> team1.playoffs.to_i }
 
-    the_rest = losers_court_team_ids.map do |team_id|
-      Team.find(team_id)
-    end.sort_by { |team| team.playoffs }.reverse
+    if playoffs.length > 3
+      losers_court_team_ids = get_teams_ids_from_court(playoffs.select { |pool| pool.court_id != 100})
 
-    third_place = the_rest.shift
+      the_rest = losers_court_team_ids.map do |team_id|
+        Team.find(team_id)
+      end.sort { |team1, team2| team2.playoffs.to_i <=> team1.playoffs.to_i }
 
-    winners.insert(2, third_place).concat(the_rest)
-    
+      third_place = the_rest.shift
+
+      winners.insert(2, third_place).concat(the_rest)
+    end
+    winners
   end
 end

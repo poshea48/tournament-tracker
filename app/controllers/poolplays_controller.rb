@@ -4,10 +4,12 @@ class PoolplaysController < ApplicationController
 
   before_action :set_tournament
   before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
+
   before_action :set_poolplay, except: [:new, :create, :create_temporary_pool]
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
   before_action :start_playoffs
+  # before_action :set_poolplay, only: [:index]
   before_action :set_playoffs, only: [:playoffs, :leaderboard, :edit]
   before_action :end_tournament
 
@@ -24,6 +26,7 @@ class PoolplaysController < ApplicationController
 
   def create_temporary_pool
     @temp_pool_now = Poolplay.create_kob_pool(@tournament)
+    session[:temp_pool] = nil
     session[:temp_pool] = @temp_pool_now
     @temp_pool_now
     respond_to do |format|
@@ -51,6 +54,8 @@ class PoolplaysController < ApplicationController
   def edit
     game_id = params[:pool_id] || params[:playoff_id]
     @game = Poolplay.find(game_id)
+    @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
+
     respond_to do |format|
       format.html
       format.js
@@ -114,6 +119,13 @@ class PoolplaysController < ApplicationController
     end
   end
 
+  def playoffs
+    unless @tournament.playoffs_started
+      flash[:danger] = "You can not access that page"
+      redirect_to poolplay_path(@tournament)
+    end
+  end
+
   def create_playoff_pool
     if @tournament.poolplay_finished
       #[[3,4,1,2], [6,7,8,9]]
@@ -122,24 +134,22 @@ class PoolplaysController < ApplicationController
         @tournament.teams.select do |team|
           team_ids.include?(team.id)
         end
-      end
+      end # creates a hash of Teams based on what court they played on
+      # passes Teams hash to class method create_playoffs
       if Poolplay.create_playoffs(@tournament.id, sort_by_pool_diff(playoff_teams))
         Tournament.update(@tournament.id, playoffs_started: true)
       else
         flash[:danger] = "Something went wrong"
+        redirect_to pool_path(@tournament)
       end
     end
     redirect_to playoffs_path(@tournament)
       # playoffs = Poolplay.create_playoffs(@tournament, sort_by_pool_diff(teams))
   end
 
-  def playoffs
-
-  end
-
   def final_results
     @winners = @tournament.final_results_list
-
+    @points = points_earned_kob(@winners.length)
     respond_to do |format|
       format.html
       format.js
@@ -193,16 +203,17 @@ class PoolplaysController < ApplicationController
       params.require(:poolplay).permit(:winner, :score)
     end
 
-    def start_playoffs
+    def start_playoffs # all
       if @poolplay.nil?
         return
       end
-      if @poolplay.none? {|game| game["score"].nil? }
+      if @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
         Tournament.update(@tournament.id, poolplay_finished: true)
+        redirect_to(poolplay_path(@tournament))
       end
     end
 
-    def set_playoffs
+    def set_playoffs # only: [:playoffs, :leaderboard, :edit]
       if @tournament.playoffs_started
         @playoffs = Poolplay.where(["tournament_id = ? and version = ?", "#{@tournament.id}", "playoff"])
         @playoff_courts = divide_pool_by_courts(@playoffs)

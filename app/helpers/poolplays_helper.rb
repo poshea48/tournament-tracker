@@ -7,6 +7,7 @@ module PoolplaysHelper
     end.join(" vs ")
   end
 
+  # given 2 teams, creates an array with 2 arrays of team names and team ids [["Paul/Abigail", "21/23"], ["Mac/Nani", "24/25"]]
   def team_name_with_team_number_array(team_ids)
     team1_id, team2_id = team_ids.split("-")
     team1_name, team2_name = create_game_title_from_team_ids(team_ids).split(" vs ")

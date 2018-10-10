@@ -1,4 +1,5 @@
 class Poolplay < ApplicationRecord
+
   belongs_to :tournament
   VALID_SCORE_REGEX = /\A[2]\d+-\d{1,2}\z/
   # validates :score, format: { with: VALID_SCORE_REGEX }
@@ -13,7 +14,9 @@ class Poolplay < ApplicationRecord
     self.randomly_assign_kob_players_to_courts(teams)
   end
 
-  def self.save_kob_to_database(pool, tourn_id)
+
+  # takes in a hash of team_ids separated by courts and version (pool or playoff)
+  def self.save_kob_to_database(pool, tourn_id, version="pool")
     if pool.nil?
       return false
     end
@@ -22,30 +25,58 @@ class Poolplay < ApplicationRecord
       teams = randomly_generate_kob_teams(pool[court])
       games = generate_kob_games(teams)
       games.each do |game|
-        result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
-                        court_id: court)
+        if version == 'playoff'
+          result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
+                          court_id: court, version: version)
+        else
+          result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
+                        court_id: court, version: version)
+        end
       end
     end
     result.empty? ? false : result
   end
 
   # refactor these two methods into 1
-
+  # need to fix for different number of courts
+  # takes in an array of arrays, each array are Team objects separated by which court they played on
   def self.create_playoffs(tournament_id, playoff_teams)
-    # assuming only 8 players 2 courts
-    playoffs = {100 => [], 101 => []}
-    playoffs[100] << playoff_teams[0][0].id << playoff_teams[0][1].id << playoff_teams[1][0].id << playoff_teams [1][1].id
-    playoffs[101] << playoff_teams[0][2].id << playoff_teams[0][3].id << playoff_teams[1][2].id << playoff_teams [1][3].id
-    result = []
-    playoffs.keys.each do |court|
-      teams = randomly_generate_kob_teams(playoffs[court])
-      games = generate_kob_games(teams)
-      games.each do |game|
-        result << Poolplay.create!(tournament_id: tournament_id, team_ids: game,
-                        court_id: court, version: "playoff")
+    playoffs = {}
+    winners = []
+    losers = []
+    if playoff_teams.length == 1
+      playoffs[100] = playoff_teams.first.map {|team| team.id}
+    else
+      playoff_teams.each do |group|
+        until group.empty?
+          if group.length == 4
+            winners << group.shift(2)
+          else
+            losers << group.shift
+          end
+        end
+      end
+
+      winners.flatten!.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}
+      if winners.length > 4
+        until winners.length == 4
+          losers << winners.pop
+        end
+      end
+
+      winners.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}.map! { |team| team.id }
+      losers.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}.map! { |team| team.id }
+
+      playoffs[100] = winners
+      court = 101
+
+      until losers.empty?
+        playoffs[court].nil? ? playoffs[court] = losers.shift(4) : playoffs[court] << losers.shift(4)
+        playoffs[court].flatten!
+        court += 1
       end
     end
-    result.empty? ? false : result
+    Poolplay.save_kob_to_database(playoffs, tournament_id, 'playoff')
   end
 
   private
