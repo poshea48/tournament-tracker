@@ -14,9 +14,9 @@
         <span class="rank"><%= i + 1 %>.</span>
         <span class="team_name"> <%= team.team_name %></span>
         <% if @playoffs %>
-          <span class="diff"> <%= sprintf("%+d", team.playoffs) %></span>
+          <span class="diff"> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></span>
         <% else %>
-          <span class="diff"><%= sprintf("%+d", team.pool_diff) %></span>
+          <span class="diff"><%= team.pool_diff == '0' ? '0' : sprintf("%+d", team.pool_diff) %></span>
         <% end %>
       </li>
     <% end %>

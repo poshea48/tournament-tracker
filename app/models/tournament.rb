@@ -19,14 +19,17 @@ class Tournament < ApplicationRecord
     winners_court_team_ids = get_teams_ids_from_court(playoffs.select { |pool| pool.court_id == 100})
 
     winners = winners_court_team_ids.map do |team_id|
-      Team.find(team_id)
+      self.teams.select {|team| team.id == team_id}.first
+      # Team.find(team_id)
     end.sort { |team1, team2| team2.playoffs.to_i <=> team1.playoffs.to_i }
 
     if playoffs.length > 3
       losers_court_team_ids = get_teams_ids_from_court(playoffs.select { |pool| pool.court_id != 100})
 
       the_rest = losers_court_team_ids.map do |team_id|
-        Team.find(team_id)
+        self.teams.select {|team| team.id == team_id}.first
+
+        # Team.find(team_id)
       end.sort { |team1, team2| team2.playoffs.to_i <=> team1.playoffs.to_i }
 
       third_place = the_rest.shift

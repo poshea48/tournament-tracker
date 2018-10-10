@@ -5,10 +5,10 @@ class PoolplaysController < ApplicationController
   before_action :set_tournament
   before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
 
-  before_action :set_poolplay, except: [:new, :create, :create_temporary_pool]
+  before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results]
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
-  before_action :start_playoffs
+  before_action :start_playoffs, except: [:final_results]
   # before_action :set_poolplay, only: [:index]
   before_action :set_playoffs, only: [:playoffs, :leaderboard, :edit]
   before_action :end_tournament
@@ -21,7 +21,7 @@ class PoolplaysController < ApplicationController
     if @tournament.poolplay_started
       redirect_to poolplay_path(@tournament.id)
     end
-    @temp_pool = session[:temp_pool]
+    # @temp_pool = session[:temp_pool]
   end
 
   def create_temporary_pool
@@ -223,6 +223,7 @@ class PoolplaysController < ApplicationController
     def end_tournament
       if !@tournament.closed && @tournament.playoffs_started && @tournament.poolplays.none? {|pool| pool.score.nil?}
         Tournament.update(@tournament.id, closed: true)
+        binding.pry
         teams = @tournament.final_results_list
         update_users_points(teams, points_earned_kob(teams.length))
         redirect_to playoffs_path(@tournament)
