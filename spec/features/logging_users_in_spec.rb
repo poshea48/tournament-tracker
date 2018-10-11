@@ -66,7 +66,7 @@ RSpec.feature "Users log in" do
     fill_in "Password", with: 'password2'
     click_button "Log in"
 
-    expect(page).to have_content("Email/password combination was incorrect")
+    expect(page).to have_content("Invalid Email/password combination")
     expect(page.current_path).to eq(login_path)
 
     expect(page).not_to have_link("Log out")

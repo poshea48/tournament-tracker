@@ -7,9 +7,7 @@
   <% end %>
 </div>
 <div class="tournament-play-links">
-  <% if ready_to_start_poolplay?%>
-    <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id) %>
-  <% elsif @tournament.poolplay_started %>
+  <% if @tournament.poolplay_started %>
     <%= link_to "Pool Play", poolplay_path(@tournament.id) %>
   <% end %>
   <% if @tournament.playoffs_started %>
@@ -58,15 +56,25 @@
     <% end %>
   </tbody>
 </table>
-<% unless @tournament.poolplay_started %>
-  <% if @current_user && @current_user.admin? %>
-    <div class="">
-      <% if @tournament.registration_open %>
-        <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
-      <% end %>
-      <% unless @tournament.poolplay_started %>
-        <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
-      <% end %>
-    </div>
+<p class="disclaimer">* Total number of players needs to be a multiple of 4 to start pool play</p>
+<div class="action_button">
+  <% unless @tournament.poolplay_started %>
+    <% if @current_user && @current_user.admin? %>
+      <div class="">
+
+        <% if @tournament.registration_open %>
+          <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
+        <% end %>
+
+        <% unless @tournament.poolplay_started %>
+          <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
+        <% end %>
+
+        <% if ready_to_start_poolplay?%>
+          <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id), class: "btn btn-primary" %>
+        <% end %>
+
+      </div>
+    <% end %>
   <% end %>
-<% end %>
+</div>

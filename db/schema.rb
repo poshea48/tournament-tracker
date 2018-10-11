@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_29_012620) do
+ActiveRecord::Schema.define(version: 2018_10_11_210054) do
 
   create_table "poolplays", force: :cascade do |t|
     t.integer "tournament_id"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 2018_09_29_012620) do
     t.boolean "admin", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "remember_digest"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
 end

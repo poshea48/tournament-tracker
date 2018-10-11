@@ -18,11 +18,11 @@ class UsersController < ApplicationController
     end
 
     @new_user = User.new(user_params)
-    if @new_user.save(user_params)
+    if @new_user.save
       if @admin
         redirect_to players_path
       else
-        log_in new_user
+        log_in @new_user
         flash[:success] = "You have signed up successfully"
         redirect_to tournaments_path
       end

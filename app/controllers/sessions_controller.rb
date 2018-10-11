@@ -1,19 +1,18 @@
 class SessionsController < ApplicationController
 
   def new
-    @user = User.new 
+    @user = User.new
   end
 
   def create
-    @user = User.find_by_email(params[:session][:email])
+    @user = User.find_by_email(params[:session][:email].downcase)
     if @user && @user.authenticate(params[:session][:password])
       log_in @user
-      params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
       flash[:success] = "You have logged in successfully"
       redirect_to tournaments_path
     else
-      flash[:danger] = "Email/password combination was incorrect"
-      redirect_to login_path
+      flash[:danger] = "Invalid Email/password combination"
+      render 'new'
     end
   end
 

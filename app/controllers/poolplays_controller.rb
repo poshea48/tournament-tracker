@@ -66,14 +66,11 @@ class PoolplaysController < ApplicationController
     game_id = params[:game_id]
     game = @tournament.get_pool(params[:game_id])
     playoffs_started = @tournament.playoffs_started
-
-    if params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
+    if params[:poolplay][:winner].nil?
+      flash[:danger] = "You need to select a winner"
+    elsif params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
+      
       flash[:danger] = "Score entered incorrectly"
-      if @tournament.playoffs_started
-        redirect_to playoffs_path(@tournament)
-      else
-        redirect_to poolplay_path(@tournament)
-      end
     else
       game.update(poolplay_params)
       if game.save
@@ -82,12 +79,12 @@ class PoolplaysController < ApplicationController
       else
         flash[:danger] = "Score was not entered correctly, must be in format xx-xx"
       end
+    end
 
-      if @tournament.playoffs_started
-        redirect_to playoffs_path(@tournament)
-      else
-        redirect_to poolplay_path(@tournament)
-      end
+    if @tournament.playoffs_started
+      redirect_to playoffs_path(@tournament)
+    else
+      redirect_to poolplay_path(@tournament)
     end
   end
 
