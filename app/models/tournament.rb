@@ -12,6 +12,14 @@ class Tournament < ApplicationRecord
     self.teams.sort {|a, b| b.total_points <=> a.total_points}
   end
 
+  def get_pool(pool_id)
+    self.poolplays.select { |pool| pool.id == pool_id.to_i }.first
+  end
+
+  def get_pools_by_version(version)
+    self.poolplays.select { |pool| pool.version == version }
+  end
+
   # final results for kob tournament
   def final_results_list
     results = []

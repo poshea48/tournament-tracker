@@ -53,7 +53,7 @@ class PoolplaysController < ApplicationController
 
   def edit
     game_id = params[:pool_id] || params[:playoff_id]
-    @game = Poolplay.find(game_id)
+    @game = @tournament.get_pool(game_id.to_i)
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
 
     respond_to do |format|
@@ -64,7 +64,7 @@ class PoolplaysController < ApplicationController
 
   def update
     game_id = params[:game_id]
-    game = Poolplay.find(params[:game_id])
+    game = @tournament.get_pool(params[:game_id])
     playoffs_started = @tournament.playoffs_started
 
     if params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
@@ -174,7 +174,7 @@ class PoolplaysController < ApplicationController
     end
 
     def set_poolplay
-      @poolplay = @tournament.poolplays.select { |pool| pool.version == 'pool' }
+      @poolplay = @tournament.get_pools_by_version("pool")
       if @poolplay.empty?
         redirect_to new_poolplay_path(@tournament.id)
       end
@@ -211,9 +211,9 @@ class PoolplaysController < ApplicationController
 
     def set_playoffs # only: [:playoffs, :leaderboard, :edit]
       if @tournament.playoffs_started
-        @playoffs = @tournament.poolplays.select { |pool| pool.version == 'playoff' }
+        @playoffs = @tournament.get_pools_by_version("playoff")
+        @playoff_courts = divide_pool_by_courts(@playoffs)
       end
-      @playoff_courts = divide_pool_by_courts(@playoffs)
     end
 
     def end_tournament
