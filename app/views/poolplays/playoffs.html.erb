@@ -6,33 +6,5 @@
       <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
     <% end %>
 </div>
-  <% @playoff_courts.keys.each do |court| %>
-    <h3><%= court == 100 ? "Championship Court" : "Consolation Court" %></h3><%= link_to "Leader Board", leaderboard_path(@tournament, court_id: court), format: "js", remote: true %>
-    <table class="pool table">
-      <thead>
-        <tr class="row">
-          <th scope="col">Games</th>
-          <th scope="col">Score</th>
-          <th scope="col">Winner(Diff)</th>
-          <th scope="col">Loser(Diff)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @playoff_courts[court].each do |game| %>
-          <tr data-pool_id="<%= game["id"] %>" class="row">
-            <td><%= create_game_title_from_team_ids(game["team_ids"]) %></td>
-            <% if game["score"].nil? %>
-              <td><%= link_to "Results", results_playoffs_path(@tournament, playoff_id: game["id"]), class: 'btn btn-primary btn-md', remote: true, data: { target: '#modal-window', toggle: 'modal'} %></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            <% else %>
-              <td id="score"><%= game["score"] %></td>
-              <td id="winner"><%= get_names_of_team_kob(game["winner"]) %> (+<%= find_differential(game["score"]) %>)</td>
-              <td id="loser"><%= get_names_of_team_kob(find_losers(game)) %> (-<%= find_differential(game["score"]) %>)</td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
+<%= render 'games_table', courts: @playoff_courts %>
+<%= link_to "", playoffs_finished_path(@tournament), method: 'post', id: 'playoffs_finished', type: 'hidden' %>

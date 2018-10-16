@@ -9,12 +9,12 @@ class PoolplaysController < ApplicationController
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
   before_action :start_playoffs, except: [:final_results]
-  # before_action :set_poolplay, only: [:index]
-  before_action :set_playoffs, only: [:playoffs, :edit]
+  before_action :set_playoffs, only: [:playoffs, :edit, :playoffs_finished]
   before_action :end_tournament
 
 
   def index
+    @current_user = current_user
   end
 
   def new
@@ -40,7 +40,6 @@ class PoolplaysController < ApplicationController
   end
 
   def create
-
     if poolplay = Poolplay.save_kob_to_database(params["pool"], @tournament.id)
       flash[:success] = "Pool play has started"
       Tournament.update(@tournament.id, poolplay_started: true)
@@ -66,22 +65,27 @@ class PoolplaysController < ApplicationController
     game_id = params[:game_id]
     game = @tournament.get_pool(params[:game_id])
     playoffs_started = @tournament.playoffs_started
+
     if params[:poolplay][:winner].nil?
       flash[:danger] = "You need to select a winner"
     elsif params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
-      
       flash[:danger] = "Score entered incorrectly"
     else
       game.update(poolplay_params)
       if game.save
         update_team_pool_differentials(game, playoffs_started)
+        ActionCable.server.broadcast 'results_channel',
+                                      game: render_results(game),
+                                      game_id: game.id,
+                                      playoffs: playoffs_started
+
         flash[:success] = "Results computed"
       else
         flash[:danger] = "Score was not entered correctly, must be in format xx-xx"
       end
     end
 
-    if @tournament.playoffs_started
+    if playoffs_started
       redirect_to playoffs_path(@tournament)
     else
       redirect_to poolplay_path(@tournament)
@@ -112,6 +116,28 @@ class PoolplaysController < ApplicationController
     end
   end
 
+  def poolplay_finished
+    if @poolplay && @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
+      Tournament.update(@tournament.id, poolplay_finished: true)
+    # else
+    #   render :index
+    end
+    redirect_to(poolplay_path(@tournament))
+    
+  end
+
+  def playoffs_finished
+    if @tournament.poolplays.select { |pool| pool.court_id >= 100 }.none? {|pool| pool.score.nil?}
+      Tournament.update(@tournament.id, closed: true)
+      teams = @tournament.final_results_list
+      update_users_points(teams, points_earned_kob(teams.length))
+    # else
+    #   render :playoffs
+    end
+    redirect_to playoffs_path(@tournament)
+
+  end
+
   def playoffs
     unless @tournament.playoffs_started
       flash[:danger] = "You can not access that page"
@@ -120,7 +146,7 @@ class PoolplaysController < ApplicationController
   end
 
   def create_playoff_pool
-    if @tournament.poolplay_finished
+    if @tournament.poolplay_finished && !@tournament.playoffs_started
       #[[3,4,1,2], [6,7,8,9]]
       playoff_teams = @courts.keys.map do |court|
         team_ids = get_teams_ids_from_court(@courts[court])
@@ -222,5 +248,7 @@ class PoolplaysController < ApplicationController
       end
     end
 
-
+    def render_results(game)
+      render(partial: 'results_display', locals: {game: game})
+    end
 end

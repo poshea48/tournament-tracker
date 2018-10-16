@@ -1,10 +1,8 @@
 <h1>Start Pool Play </h1>
 <%= link_to "Create temporary pool", create_temp_pool_path(@tournament.id), data: {id: @tournament.id}, remote: true, id: "temp_pool", class: 'btn btn-primary btn-md' %>
 
-<div class="row">
-  <ul id="temp_pool_location">
-    <% if @temp_pool %>
-      <%= render 'temp_pool_partial', object: @temp_pool %>
-    <% end %>
-  </ul>
+<div id="temp_pool_location">
+  <% if @temp_pool %>
+    <%= render 'temp_pool_partial', object: @temp_pool %>
+  <% end %>
 </div>

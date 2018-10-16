@@ -14,7 +14,7 @@ RSpec.feature "Add player" do
     @tournament = Tournament.create(name: "Tournament One", date: "9/5/2018", tournament_type: 'kob')
 
     visit '/'
-    click_link("Log in", match: :first)
+    click_link("Log in")
     fill_in "Email", with: @admin.email
     fill_in "Password", with: 'password'
     click_button "Log in"
@@ -23,7 +23,6 @@ RSpec.feature "Add player" do
   scenario "Admin user adds a player to a KOB tournament from index" do
     visit '/'
     click_link("Add", match: :first)
-
     expect(current_path).to eq("/tournaments/#{@tournament.id}/add_team")
     expect(page).to have_content("Admin")
     expect(page).to have_content("Nonadmin")

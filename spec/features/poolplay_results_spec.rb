@@ -22,7 +22,7 @@ RSpec.feature "Visit KOB Pool Play Page" do
     Team.create(user_id: @player4.id, tournament_id: @tournament.id, team_name: @player4.first_name)
 
     visit '/'
-    click_link("Log in", match: :first)
+    click_link("Log in")
     fill_in "Email", with: @player1.email
     fill_in "Password", with: 'password'
     click_button "Log in"

@@ -1,57 +1,20 @@
 <% unless @tournament.poolplay_started %>
   <% link_to "Create Pools", new_poolplay_path(@tournament.id) %>
 <% else %>
-<h2 class="text-center">POOL PLAY</h2>
-<div class="tournament-play-links">
-  <%= link_to "Tournament Home", tournament_path(@tournament.id) %>
-  <% if @tournament.playoffs_started %>
-    <%= link_to "Playoffs", playoffs_path(@tournament) %>
-  <% end %>
-  <% if @tournament.closed %>
-    <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
-  <% end %>
-</div>
-  <% @courts.keys.each do |court| %>
-    <h3>Court <%= court %></h3>
-    <%= link_to "Leader Board", leaderboard_path(@tournament, court_id: court), format: "js", remote: true %>
-    <table class="pool table">
-      <thead>
-        <tr class="row">
-          <th scope="col">Games</th>
-          <th scope="col">Score</th>
-          <th scope="col">Winner(Diff)</th>
-          <th scope="col">Loser(Diff)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @courts[court].each do |game| %>
-          <tr data-pool_id="<%= game["id"] %>" class="row">
-            <td><%= create_game_title_from_team_ids(game["team_ids"]) %></td>
-            <% if game["score"].nil? %>
-              <td>
-                <%= link_to "Results", results_poolplay_path(@tournament,
-                pool_id: game["id"]), class: 'btn btn-primary btn-md',
-                remote: true, data: { target: '#modal-window', toggle: 'modal'}
-                %>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-            <% else %>
-              <td id="score"><%= game["score"] %></td>
-              <td id="winner">
-                <%= get_names_of_team_kob(game["winner"]) %> (+<%= find_differential(game["score"]) %>)
-              </td>
-              <td id="loser">
-                <%= get_names_of_team_kob(find_losers(game)) %> (-<%= find_differential(game["score"]) %>)
-              </td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
+  <h2 class="text-center">POOL PLAY</h2>
+  <div class="tournament-play-links">
+    <%= link_to "Tournament Home", tournament_path(@tournament.id) %>
+    <% if @tournament.playoffs_started %>
+      <%= link_to "Playoffs", playoffs_path(@tournament) %>
+    <% end %>
+    <% if @tournament.closed %>
+      <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
+    <% end %>
+  </div>
+  <%= render 'games_table', courts: @courts %>
 <% end %>
-<% if @tournament.poolplay_finished && !@tournament.playoffs_started %>
+
+<% if @tournament.poolplay_finished && !@tournament.playoffs_started  && (@current_user && @current_user.admin?) %>
   <%= link_to "Start Playoffs", playoffs_path(@tournament), method: 'post', class: "btn btn-lg btn-primary" %>
 <% end %>
+<%= link_to "", poolplay_finished_path(@tournament), method: 'post', id: 'poolplay_finished', type: 'hidden' %>

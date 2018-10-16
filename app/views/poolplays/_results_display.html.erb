@@ -1,0 +1,7 @@
+<td id="score"><%= sanitize game["score"] %></td>
+<td id="winner">
+  <%= get_names_of_team_kob(sanitize game["winner"]) %> (+<%= find_differential(sanitize game["score"]) %>)
+</td>
+<td id="loser">
+  <%= get_names_of_team_kob(find_losers(game)) %> (-<%= find_differential(sanitize game["score"]) %>)
+</td>

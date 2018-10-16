@@ -6,7 +6,7 @@
 
 <div class="modal-body">
   <%= render 'shared/errors', object: @game %>
-  <%= form_for @game, url: { action: "update", game_id: @game.id } do |f| %>
+  <%= form_for @game, url: { action: "update", game_id: @game.id }, remote: true do |f| %>
       <div class="form-group">
           <%= f.label :winner, class: "col-sm-4" %>
           <span><%= f.radio_button :winner, @team_1[1] %> <%= @team_1[0] %>  </span>

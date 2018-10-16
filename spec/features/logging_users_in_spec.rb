@@ -49,8 +49,8 @@ RSpec.feature "Users log in" do
 
     fill_in "Email", with: @user.email
     fill_in "Password", with: @user.password
-    check "Remember me"
-    expect(page).to have_field('Remember me', checked: true) # checked: false or unchecked: true for not checked
+    # check "Remember me"
+    # expect(page).to have_field('Remember me', checked: true) # checked: false or unchecked: true for not checked
     click_button "Log in"
   end
 
