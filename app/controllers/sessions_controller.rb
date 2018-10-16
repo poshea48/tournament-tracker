@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
     @user = User.find_by_email(params[:session][:email].downcase)
     if @user && @user.authenticate(params[:session][:password])
       log_in @user
+      remember @user
       flash[:success] = "You have logged in successfully"
       redirect_to tournaments_path
     else

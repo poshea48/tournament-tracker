@@ -7,6 +7,7 @@ App.results = App.cable.subscriptions.create "ResultsChannel",
 
   received: (data) ->
     tr = $("#pool_#{data.game_id}")
+    debugger;
     if (data.game && !data.game.blank?)
       $("#modal-window").modal("hide")
       tr.children(':not(:first-child)').remove()

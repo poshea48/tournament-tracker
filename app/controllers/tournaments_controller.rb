@@ -5,7 +5,7 @@ class TournamentsController < ApplicationController
   before_action :set_tournament, except: [:index, :new, :create]#only: [:show, :edit, :add_team, :add_to_tournament, :update, :pool_play, :destroy]
   before_action :set_user
   before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
-  before_action :set_teams, only: [:show, :pool_play]
+  # before_action :set_teams, only: [:show, :pool_play]
 
   def index
     @tournaments = Tournament.all
@@ -101,7 +101,7 @@ class TournamentsController < ApplicationController
 
 
   protected
-  def resource_not_found
+  def resource_not_found(error)
     flash[:danger] = "The tournament you are looking for could not be found"
     redirect_to root_path
   end
