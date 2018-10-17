@@ -20,6 +20,7 @@ gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 gem "font-awesome-rails"
 gem 'jquery-rails'
+gem 'redis'
 ##############################################
 
 # Use CoffeeScript for .coffee assets and views
