@@ -1,14 +1,25 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "font-awesome";
+
+html {
+  height: 100%;
+}
 body {
   font-size: 14px;
   font-family: sans-serif;
-  height: 100vh;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#container {
+  min-height: 100%;
+  position: relative;
 }
 
 #main {
-  height: 100%;
+  padding-bottom: 50px;
 }
 
 a {
@@ -68,10 +79,9 @@ ul {
 }
 
 #footer {
-  left: 0;
+  position: absolute;
   bottom: 0;
   width: 100%;
-  margin-top: 10px;
   height: 50px;
   background-color: #f8f8f8;
   border: 1px solid #e7e7e7;

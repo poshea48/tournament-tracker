@@ -11,26 +11,28 @@
   </head>
 
   <body>
-    <header role="banner">
-      <%= render 'layouts/navigation' %>
-    </header>
-    <div id="modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content flex container"></div>
-      </div>
-    </div>
-    <div id="main" class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <% flash.each do |name, msg| %>
-            <div class="text-center alert alert-<%= name %>">
-              <%= msg %>
-            </div>
-          <% end %>
-          <%= yield %>
+    <div id="container">
+      <header role="banner">
+        <%= render 'layouts/navigation' %>
+      </header>
+      <div id="modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content flex container"></div>
         </div>
       </div>
+      <div id="main" class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <% flash.each do |name, msg| %>
+              <div class="text-center alert alert-<%= name %>">
+                <%= msg %>
+              </div>
+            <% end %>
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+      <footer id="footer"></footer>
     </div>
-    <footer id="footer"></footer>
   </body>
 </html>
