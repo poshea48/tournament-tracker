@@ -14,67 +14,54 @@
     <%= link_to "Playoffs", playoffs_path(@tournament) %>
   <% end %>
 </div>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">rank</th>
-      <% if @tournament.tournament_type == 'kob' %>
-        <th scope="col">Player</th>
-      <% else %>
-        <th scope="col">Team</th>
-      <% end %>
-      <th class="col">Points</th>
-      <th class="col">Latest Results</th>
-      <% if @user && @user.admin? && @tournament.registration_open %>
-        <th class="col">Remove Team</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @tournament.teams.each_with_index do |team, i| %>
-    <tr>
-      <% if @tournament.tournament_type == 'kob' %>
-        <% if @tournament.teams.empty? %>
-          <td colspan="4">No Players added yet</td>
+
+<% cache(@tournament) do %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">rank</th>
+        <% if @tournament.tournament_type == 'kob' %>
+          <th scope="col">Player</th>
         <% else %>
-          <td><%= i + 1%></td>
-          <td><%= link_to team.team_name, player_path(team.user_id) %></td>
-          <td><%= team.total_points %></td>
-          <td>N/A</td>
-          <% if @user && @user.admin? && @tournament.registration_open %>
-            <td>
-              <%= link_to delete_team_path(@tournament.id, team_id: team.id), method: "delete", remote: true do %>
-                <i class="fa fa-trash fa-2x text-danger" ></i>
-              <% end %>
-            </td>
-          <% end %>
+          <th scope="col">Team</th>
         <% end %>
-      <% else %>
-        <td colspan="4">No Teams added yet</td>
+        <th class="col">Points</th>
+        <th class="col">Latest Results</th>
+        <% if @user && @user.admin? && @tournament.registration_open %>
+          <th class="col">Remove Team</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tournament.teams.each_with_index do |team, i| %>
+        <% if @tournament.tournament_type == 'kob' %>
+          <% if @tournament.teams.empty? %>
+            <tr><td colspan="4">No Players added yet</td></tr>
+          <% else %>
+            <% cache(team) do %>
+              <%= render 'kob_team', team: team, i: i %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <tr><td colspan="4">No Teams added yet</td></tr>
+        <% end %>
       <% end %>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+<% end %>
 <p class="disclaimer">* Total number of players needs to be a multiple of 4 to start pool play</p>
 <div class="action_button">
-  <% unless @tournament.poolplay_started %>
-    <% if @current_user && @current_user.admin? %>
-      <div class="">
+  <% if @current_user && @current_user.admin? && !@tournament.poolplay_started %>
+    <div class="">
+      <% if @tournament.registration_open %>
+        <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
+      <% end %>
 
-        <% if @tournament.registration_open %>
-          <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
-        <% end %>
+      <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
 
-        <% unless @tournament.poolplay_started %>
-          <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
-        <% end %>
-
-        <% if ready_to_start_poolplay?%>
-          <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id), class: "btn btn-primary" %>
-        <% end %>
-
-      </div>
-    <% end %>
+      <% if ready_to_start_poolplay?%>
+        <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id), class: "btn btn-primary" %>
+      <% end %>
+    </div>
   <% end %>
 </div>

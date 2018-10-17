@@ -1,58 +1,30 @@
 <% if @user && @user.admin? %>
   <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
 <% end %>
-  <table class="table row">
-    <thead>
+<table class="table row">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">Type</th>
+      <th scope="col">Registration</th>
+      <th scope="col">Results</th>
+      <% if @user && @user.admin? %>
+        <th scope="col">Action</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @tournaments.empty? %>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Date</th>
-        <th scope="col">Type</th>
-        <th scope="col">Registration</th>
-        <th scope="col">Results</th>
-        <% if @user && @user.admin? %>
-          <th scope="col">Action</th>
-        <% end %>
+        <td colspan="4">No Tournaments</td>
       </tr>
-    </thead>
-    <tbody>
-      <% if @tournaments.empty? %>
-        <tr>
-          <td colspan="4">No Tournaments</td>
-        </tr>
-      <% else %>
-        <% @tournaments.each do |tourn| %>
-          <tr data-id="<%= tourn.id %>">
-            <!-- <th scope="row"></th> -->
-            <td><%= link_to tourn.name, tournament_path(tourn)%></td>
-            <td><%= tourn.date %></td>
-            <td><%= tourn.tournament_type == 'kob' ? 'KOB' : 'Team' %></td>
-            <td><%= tourn.registration_open ? 'Open' : 'Closed' %></td>
-            <td>
-              <% if tourn.closed %>
-                <%= link_to "Final Results", final_results_path(tourn), remote: true, format: 'js' %>
-              <% else %>
-                N/A
-              <% end %>
-            </td>
-            <% if @user && @user.admin? %>
-              <% if tourn.closed %>
-                <td class="action-row">
-                  <%= link_to tournament_path(tourn), id: "delete", method: "delete", data: { confirm: "Are you sure" } do %>
-                    <i class="fa fa-trash fa-2x"></i>
-                  <% end %>
-                </td>
-              <% else %>
-                <% if !tourn.poolplay_started && tourn.registration_open %>
-                  <td class="action-row">
-                    <%= link_to "Add", add_team_path(tourn.id), class: "btn btn-sm btn-success" %>
-                  </td>
-                <% else %>
-                  <td class="action-row">N/A</td>
-                <% end %>
-              <% end %>
-            <% end %>
-          </tr>
+    <% else %>
+      <% @tournaments.each do |tourn| %>
+        <% cache(tourn) do %>
+          <%= render 'tournament', tourn: tourn %>
         <% end %>
       <% end %>
-    </tbody>
-  </table>
+    <% end %>
+  </tbody>
+</table>

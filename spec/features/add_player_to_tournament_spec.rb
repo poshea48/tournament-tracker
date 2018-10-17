@@ -12,7 +12,6 @@ RSpec.feature "Add player" do
                           password_confirmation: 'password' })
 
     @tournament = Tournament.create(name: "Tournament One", date: "9/5/2018", tournament_type: 'kob')
-    binding.pry
     visit '/'
     click_link("Log in")
     fill_in "Email", with: @admin.email

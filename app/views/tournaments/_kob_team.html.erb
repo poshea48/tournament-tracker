@@ -1,0 +1,13 @@
+<tr>
+  <td><%= i + 1%></td>
+  <td><%= link_to team.team_name, player_path(team.user_id) %></td>
+  <td><%= team.total_points %></td>
+  <td>N/A</td>
+  <% if @user && @user.admin? && @tournament.registration_open %>
+    <td>
+      <%= link_to delete_team_path(@tournament.id, team_id: team.id), method: "delete", remote: true do %>
+        <i class="fa fa-trash fa-2x text-danger" ></i>
+      <% end %>
+    </td>
+  <% end %>
+</tr>

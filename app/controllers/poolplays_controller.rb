@@ -21,13 +21,13 @@ class PoolplaysController < ApplicationController
     if @tournament.poolplay_started
       redirect_to poolplay_path(@tournament.id)
     end
-    # @temp_pool = session[:temp_pool]
+    @temp_pool = session[:temp_pool]
   end
 
   def create_temporary_pool
     @temp_pool_now = Poolplay.create_kob_pool(@tournament)
-    session[:temp_pool] = nil
     session[:temp_pool] = @temp_pool_now
+
     @temp_pool_now
     respond_to do |format|
       # format.js {render layout: false}
@@ -43,6 +43,7 @@ class PoolplaysController < ApplicationController
     if poolplay = Poolplay.save_kob_to_database(params["pool"], @tournament.id)
       flash[:success] = "Pool play has started"
       Tournament.update(@tournament.id, poolplay_started: true)
+      session[:temp_pool] = nil
       redirect_to poolplay_path(@tournament)
     else
       flash[:danger] = "Something went wrong"
@@ -123,7 +124,7 @@ class PoolplaysController < ApplicationController
     #   render :index
     end
     redirect_to(poolplay_path(@tournament))
-    
+
   end
 
   def playoffs_finished
