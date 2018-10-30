@@ -7,11 +7,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @players.each do |player| %>
-        <% cache(player) do %>
-          <%= render 'player', player: player %>
-        <% end %>
-      <% end %>
+      <%= render @users, cache: true %>
     </tbody>
   </table>
 </div>

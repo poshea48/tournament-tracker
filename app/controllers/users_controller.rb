@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :make_read_only, except: [:index]
 
   def index
-    @players = User.all.sort_by {|player| player.points}.reverse
+    @users = User.all.sort_by {|player| player.points}.reverse
     @user = current_user
   end
 

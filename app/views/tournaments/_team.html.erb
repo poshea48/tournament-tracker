@@ -1,0 +1,23 @@
+<% if @tournament.tournament_type == 'kob' %>
+  <% if @tournament.teams.empty? %>
+    <tr><td colspan="4">No Players added yet</td></tr>
+  <% else %>
+    <% cache(team) do %>
+    <tr>
+      <td><%= team_counter + 1 %></td>
+      <td><%= link_to team.team_name, player_path(team.user_id) %></td>
+      <td><%= team.total_points %></td>
+      <td>N/A</td>
+      <% if @user && @user.admin? && @tournament.registration_open %>
+        <td>
+          <%= link_to delete_team_path(@tournament.id, team_id: team.id), method: "delete", remote: true do %>
+            <i class="fa fa-trash fa-2x text-danger" ></i>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+    <% end %>
+  <% end %>
+<% else %>
+  <tr><td colspan="4">No Teams added yet</td></tr>
+<% end %>

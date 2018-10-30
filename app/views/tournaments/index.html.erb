@@ -20,11 +20,7 @@
         <td colspan="4">No Tournaments</td>
       </tr>
     <% else %>
-      <% @tournaments.each do |tourn| %>
-        <% cache(tourn) do %>
-          <%= render 'tournament', tourn: tourn %>
-        <% end %>
-      <% end %>
+      <%= render @tournaments, cache: true %>
     <% end %>
   </tbody>
 </table>

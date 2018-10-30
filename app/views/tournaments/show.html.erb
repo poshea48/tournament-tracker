@@ -33,23 +33,12 @@
       </tr>
     </thead>
     <tbody>
-      <% @tournament.teams.each_with_index do |team, i| %>
-        <% if @tournament.tournament_type == 'kob' %>
-          <% if @tournament.teams.empty? %>
-            <tr><td colspan="4">No Players added yet</td></tr>
-          <% else %>
-            <% cache(team) do %>
-              <%= render 'kob_team', team: team, i: i %>
-            <% end %>
-          <% end %>
-        <% else %>
-          <tr><td colspan="4">No Teams added yet</td></tr>
-        <% end %>
-      <% end %>
+      <%= render partial: 'tournaments/team', collection: @tournament.teams, cache: true %>
     </tbody>
   </table>
 <% end %>
 <p class="disclaimer">* Total number of players needs to be a multiple of 4 to start pool play</p>
+
 <div class="action_button">
   <% if @current_user && @current_user.admin? && !@tournament.poolplay_started %>
     <div class="">
