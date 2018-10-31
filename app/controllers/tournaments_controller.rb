@@ -32,6 +32,7 @@ class TournamentsController < ApplicationController
   def edit
   end
 
+  # shows add_team form for user or admin
   def add_team
     @players = User.available_users(@tournament.id)
     unless @tournament.registration_open

@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
       <%= render 'shared/errors', object: @user %>
-      <% if @tournament.tournament_type == 'kob' %>
+      <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
         <% if @user.admin %>
           <%= render 'admin_player_form' %>
         <% else %>
