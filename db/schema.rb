@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_11_210054) do
+ActiveRecord::Schema.define(version: 2018_10_31_192105) do
+
+  create_table "playoffs", force: :cascade do |t|
+    t.integer "tournament_id"
+    t.integer "round"
+    t.string "team_ids"
+    t.string "winner"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tournament_id"], name: "index_playoffs_on_tournament_id", unique: true
+  end
 
   create_table "poolplays", force: :cascade do |t|
     t.integer "tournament_id"
@@ -20,7 +30,6 @@ ActiveRecord::Schema.define(version: 2018_10_11_210054) do
     t.string "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "version", default: "pool"
     t.index ["tournament_id"], name: "index_poolplays_on_tournament_id"
   end
 
