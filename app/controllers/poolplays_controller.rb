@@ -25,7 +25,12 @@ class PoolplaysController < ApplicationController
   end
 
   def create_temporary_pool
-    @temp_pool_now = Poolplay.create_kob_pool(@tournament)
+    type = @tournament.tournament_type
+    if type == 'kob' || 'kob/team'
+      @temp_pool_now = Poolplay.create_kob_pool(@tournament)
+    else
+      @temp_pool_now = Poolplay.create_team_pool(@tournament)
+    end
     session[:temp_pool] = @temp_pool_now
 
     @temp_pool_now
@@ -40,7 +45,7 @@ class PoolplaysController < ApplicationController
   end
 
   def create
-    if poolplay = Poolplay.save_kob_to_database(params["pool"], @tournament.id)
+    if Poolplay.save_kob_to_database(params["pool"], @tournament.id)
       flash[:success] = "Pool play has started"
       Tournament.update(@tournament.id, poolplay_started: true)
       session[:temp_pool] = nil
@@ -147,6 +152,8 @@ class PoolplaysController < ApplicationController
   end
 
   def create_playoff_pool
+    kob = @tournament.tournament_type == 'kob'
+
     if @tournament.poolplay_finished && !@tournament.playoffs_started
       #[[3,4,1,2], [6,7,8,9]]
       playoff_teams = @courts.keys.map do |court|
@@ -155,8 +162,10 @@ class PoolplaysController < ApplicationController
           team_ids.include?(team.id)
         end
       end # creates a hash of Teams based on what court they played on
+
       # passes Teams hash to class method create_playoffs
-      if Poolplay.create_playoffs(@tournament.id, sort_by_pool_diff(playoff_teams))
+        # creates playoff with kob set to true or false, true for kob playoffs, false for team playoffs
+      if Poolplay.create_playoffs_group(@tournament.id, sort_by_pool_diff(playoff_teams), kob)
         Tournament.update(@tournament.id, playoffs_started: true)
       else
         flash[:danger] = "Something went wrong"

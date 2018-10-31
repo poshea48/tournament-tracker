@@ -1,6 +1,6 @@
 class Poolplay < ApplicationRecord
 
-  belongs_to :tournament
+  belongs_to :tournament, touch: true
   VALID_SCORE_REGEX = /\A[2]\d+-\d{1,2}\z/
   # validates :score, format: { with: VALID_SCORE_REGEX }
 
@@ -13,35 +13,146 @@ class Poolplay < ApplicationRecord
     teams = tournament.teams.map {|team| team.id}
     self.randomly_assign_kob_players_to_courts(teams)
   end
-
-
   # takes in a hash of team_ids separated by courts and version (pool or playoff)
+
+
+  # refactor these two methods into 1
+  # takes in an array of arrays, each array are Team objects separated by which court they played on
+  def self.create_playoffs_group(tournament_id, playoff_teams, kob)
+    if kob
+      Poolplay.create_kob_playoffs(tournament_id, playoff_teams)
+    else
+      Poolplay.create_team_playoffs(tournament_id, playoff_teams)
+    end
+  end
+
+  def self.create_kob_playoffs(tournament_id, playoff_teams)
+    playoffs = {}
+    court = 100
+
+    sorted_teams = Poolplay.sort_teams_into_array_by_points(playoff_teams)
+
+    until sorted_teams.empty?
+      playoffs[court] = sorted_teams.shift(4)
+      court += 1
+    end
+
+    # if playoff_teams.length == 1
+    #   playoffs[100] = playoff_teams.first.map {|team| team.id}
+    # else
+    #   playoff_teams.each do |group|
+    #     until group.empty?
+    #       if group.length == 4
+    #         winners << group.shift(2)
+    #       else
+    #         losers << group.shift
+    #       end
+    #     end
+    #   end
+    #
+    #   winners.flatten!.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}
+    #   if winners.length > 4
+    #     until winners.length == 4
+    #       losers << winners.pop
+    #     end
+    #   end
+    #
+    #   winners.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}.map! { |team| team.id }
+    #   losers.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}.map! { |team| team.id }
+    #
+    #   playoffs[100] = winners
+    #   court = 101
+    #
+    #   until losers.empty?
+    #     playoffs[court].nil? ? playoffs[court] = losers.shift(4) : playoffs[court] << losers.shift(4)
+    #     playoffs[court].flatten!
+    #     court += 1
+    #   end
+    # end
+
+    Poolplay.save_kob_to_database(playoffs, tournament_id, 'playoff')
+  end
+
+  def self.create_team_playoffs(tournament_id, playoff_teams)
+    seeds = {}
+    seed = 1
+    sorted_teams = Poolplay.sort_teams_into_array_by_points(playoff_teams)
+    until sorted_teams.empty?
+      seeds[seed] = sorted_teams.shift(2)
+      seed += 1
+    end
+    Poolplay.save_team_play_to_database(seeds, tournament_id, 'playoff')
+  end
+
+  #takes in hash => keys = courts, values = team_ids
   def self.save_kob_to_database(pool, tourn_id, version="pool")
     if pool.nil?
       return false
     end
-    result = []
+    # result = []
     pool.keys.each do |court|
       teams = randomly_generate_kob_teams(pool[court])
       games = generate_kob_games(teams)
       games.each do |game|
-        if version == 'playoff'
-          result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
-                          court_id: court, version: version)
-        else
-          result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
+        # if version == 'playoff'
+        Poolplay.create(tournament_id: tourn_id, team_ids: game,
                         court_id: court, version: version)
-        end
+        # else
+        #   result << Poolplay.create(tournament_id: tourn_id, team_ids: game,
+        #                 court_id: court, version: version)
+        # end
       end
     end
-    result.empty? ? false : result
+    # result.empty? ? false : result
   end
 
+<<<<<<< HEAD
   # refactor these two methods into 1
   # need to fix for different number of courts
 
+=======
+  #takes in hash => keys = seed, values = team_ids
+  def self.save_team_play_to_database(pool, tourn_id, version="pool")
+    if pool.nil?
+      return false
+    end
+    # {1:[1, 5], 2:[2, 6], 3:[3, 7], 4:[4,8]}
+    # Add player2_id to each team
+    pool.keys.each do |team|
+      first, second = team.map {|player| Team.find(player)}
+      Team.update(first.id, player2_id: second.id, playoffs: "#{team}-5")
+      Team.update(second.id, player2_id: first.id, playoffs: "#{team}-5")
+    end
+    #bracket = {1: [[1/5, 4/8], [2/6, 3/7]]}
+    seeds = pool.keys
+    if pool.keys.size % 4 == 0 && pool.keys.size >= 4
+      until seeds.empty?
+        high_seed = pool[seeds.shift]
+        low_seed = pool[seeds.pop]
+      end
+    end
+  end
+>>>>>>> kob-team-type
 
   private
+    def self.sort_teams_into_array_by_points(playoff_teams)
+      result = []
+      index = 0
+      playoff_teams.map! do |court|
+        court.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}
+      end
+      until index > 3
+        seeds = []
+        playoff_teams.each do |court|
+          seeds.push(court[index])
+        end
+        seeds.sort! {|team1, team2| team2.pool_diff <=> team1.pool_diff}.map! { |team| team.id }
+        result.push(seeds)
+        result.flatten
+        index += 1
+      end
+      result.flatten
+    end
 
     # # separate teams into groups of 4
     # # result = {1: [6, 2, 1, 8], 2: [5, 4, 3, 7]}

@@ -1,6 +1,6 @@
 <div class="tournament_title">
   <h2 class="text-center"><%= @tournament.name %> - <%= @tournament.date %></h1>
-  <h3 class="text-center">TYPE: <%= @tournament.tournament_type == 'kob' ? 'KOB' : 'Team' %></h3>
+  <h3 class="text-center">TYPE: <%= @tournament.tournament_type.upcase %></h3>
 
   <% if @user && @user.admin? %>
     <h4 class="text-center"><%= link_to "Edit", edit_tournament_path(@tournament) %></h3>
@@ -20,7 +20,7 @@
     <thead>
       <tr>
         <th scope="col">rank</th>
-        <% if @tournament.tournament_type == 'kob' %>
+        <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
           <th scope="col">Player</th>
         <% else %>
           <th scope="col">Team</th>
@@ -33,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= render partial: 'tournaments/team', collection: @tournament.teams, cache: true %>
+      <%= render partial: 'tournaments/team', collection: sort_teams_by_points(@tournament.teams), cache: true %>
     </tbody>
   </table>
 <% end %>
