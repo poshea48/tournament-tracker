@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  get 'playoffs/index'
+  get 'playoffs/new'
+  get 'playoff/index'
+  get 'playoff/new'
   root to: 'tournaments#index'
   resources :tournaments
 

@@ -15,49 +15,49 @@
 
 User.create!([
   {
+    first_name: 'Paul',
+    email: "poshea48@msn.com",
+    admin: true,
+    password: 'track@@$$this'
+  },
+
+  {
     first_name: 'Abigail',
     email: 'abigail.machernis@gmail.com',
     password: 'iamthegailface'
   },
   {
     first_name: "Dan",
-    last_name: ' ',
     email: 'dan@email.com',
     password: 'itsDan'
   },
   {
     first_name: "Oliver",
-    last_name: " ",
     email: 'oliver@email.com',
     password: 'itsOliver'
   },
   {
     first_name: "Mike",
-    last_name: ' ',
     email: 'mike@email.com',
     password: 'itsMike'
   },
   {
     first_name: "Bobby",
-    last_name: " ",
     email: 'bobby@email.com',
     password: 'itsBobby'
   },
   {
     first_name: "Chad",
-    last_name: ' ',
     email: 'chad@email.com',
     password: 'itsChad'
   },
   {
     first_name: "Steve",
-    last_name: " ",
     email: 'steve@email.com',
     password: 'itsSteve'
   },
   {
     first_name: "Jake",
-    last_name: ' ',
     email: 'jake@email.com',
     password: 'itsJake'
   }
