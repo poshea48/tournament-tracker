@@ -8,6 +8,33 @@
 </div>
 
 <div class="modal-body">
+  <table class="table row">
+    <thead>
+      <tr>
+        <th scope="col">Place</th>
+        <th scope="col">Player</th>
+        <th scope="col">Record</th>
+        <th scope="col">Differential</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @teams.each_with_index do |team, i| %>
+      <tr>
+        <td><%=(i + 1).ordinalize %></td>
+        <td><%= team.team_name %></td>
+        <td><%= team.pool_record %></td>
+        <% if @in_playoffs %>
+          <td> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></td>
+        <% else %>
+          <td><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<!-- <div class="modal-body">
   <ul id="leader_board row">
     <% @teams.each_with_index do |team, i| %>
       <li class="player_rank">
@@ -20,6 +47,6 @@
         <% end %>
       </li>
     <% end %>
-  </ul>
+  </ul> -->
 <div class="modal-footer">
 </div>

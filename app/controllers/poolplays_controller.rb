@@ -1,17 +1,14 @@
 class PoolplaysController < ApplicationController
   include PoolplaysHelper
   include TournamentsHelper
+  include GamePlayable
 
   before_action :set_tournament
-  before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
-
   before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results, :leaderboard]
+  before_action :start_playoffs
+  before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
   before_action :restrict_access
   before_action :validate_team_numbers, only: [:new, :create]
-  before_action :start_playoffs, except: [:final_results]
-  before_action :set_playoffs, only: [:playoffs, :edit, :playoffs_finished]
-  before_action :end_tournament
-
 
   def index
     @current_user = current_user
@@ -27,9 +24,10 @@ class PoolplaysController < ApplicationController
   def create_temporary_pool
     type = @tournament.tournament_type
     if type == 'kob' || 'kob/team'
-      @temp_pool_now = Poolplay.create_kob_pool(@tournament)
+      @temp_pool_now = Game.create_random_kob_poolplay(@tournament)
+      #{1: [3, 4, 8, 5], 2: [1, 2, 7, 6]}
     else
-      @temp_pool_now = Poolplay.create_team_pool(@tournament)
+      @temp_pool_now = Game.create_random_team_poolplay(@tournament)
     end
     session[:temp_pool] = @temp_pool_now
 
@@ -44,21 +42,39 @@ class PoolplaysController < ApplicationController
     # redirect_to new_poolplay_path(@tournament)
   end
 
+  #params["pool"] = {1: [3, 4, 8, 5], 2: [1, 2, 7, 6]}
   def create
-    if Poolplay.save_kob_to_database(params["pool"], @tournament.id)
-      flash[:success] = "Pool play has started"
+    kob = @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team'
+    pool = nil
+
+    if session[:temp_pool]
+      if kob
+        pool = Game.save_kob_to_database(@tournament.id, params["pool"], "poolplay")
+      else
+        pool = Game.save_team_play_to_database(@tournament.id, params["pool"], "poolplay")
+      end
+    else
+      if kob
+        pool = Game.create_seeded_kob_poolplay(@tournament)
+      else
+        pool = Game.create_seeded_teams_poolplay(@tournament)
+      end
+    end
+
+    if pool
       Tournament.update(@tournament.id, poolplay_started: true)
+      flash[:success] = "Pool play has started"
       session[:temp_pool] = nil
       redirect_to poolplay_path(@tournament)
     else
       flash[:danger] = "Something went wrong"
-      redirect_to new_poolplay_path(@tournament)
+      redirect_to tournament_path(@tournament)
     end
   end
 
   def edit
-    game_id = params[:pool_id] || params[:playoff_id]
-    @game = @tournament.get_pool(game_id.to_i)
+    game_id = params[:pool_id].to_i #|| params[:playoff_id]
+    @game = @tournament.poolplays.select {|game| game.id == game_id}.first
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
 
     respond_to do |format|
@@ -68,52 +84,46 @@ class PoolplaysController < ApplicationController
   end
 
   def update
-    game_id = params[:game_id]
-    game = @tournament.get_pool(params[:game_id])
-    playoffs_started = @tournament.playoffs_started
-
-    if params[:poolplay][:winner].nil?
+    game_id = params[:game_id].to_i
+    game = Game.find(game_id)
+    if params[:game][:winner].nil?
       flash[:danger] = "You need to select a winner"
-    elsif params[:poolplay][:score].empty? || params[:poolplay][:score].nil? || params[:poolplay][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
+    elsif params[:game][:score].empty? || params[:game][:score].nil? || params[:game][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
       flash[:danger] = "Score entered incorrectly"
     else
-      game.update(poolplay_params)
-      if game.save
-        update_team_pool_differentials(game, playoffs_started)
+      if game.update(game_params)
+        # move out of Playable and into model(out of class method)
+        game.update_play(@tournament.tournament_type, false)
         ActionCable.server.broadcast 'results_channel',
                                       game: render_results(game),
                                       game_id: game.id,
-                                      playoffs: playoffs_started
-
-        flash[:success] = "Results computed"
+                                      playoffs: false
       else
-        flash[:danger] = "Score was not entered correctly, must be in format xx-xx"
+        flash[:danger] = "Score was not entered"
       end
     end
 
-    if playoffs_started
-      redirect_to playoffs_path(@tournament)
-    else
-      redirect_to poolplay_path(@tournament)
-    end
+    redirect_to poolplay_path(@tournament)
   end
 
   def leaderboard
     @court = params["court_id"].to_i
-    @in_playoffs = @court >= 100
+    # @in_playoffs = @court >= 100
     pool = @tournament.poolplays.select { |pool| pool.court_id == @court }
 
     team_ids = get_teams_ids_from_court(pool)
-    @teams = nil
 
-    @teams = @tournament.teams.select { |team| team_ids.include?(team.id) }
-      .sort do |team1, team2|
-      if @court == 100 || @court == 101
-        team2.playoffs.to_i <=> team1.playoffs.to_i
-      else
-        team2.pool_diff <=> team1.pool_diff
-      end
-    end
+    @teams = poolplay_standings(team_ids, @tournament.teams)
+    @in_playoffs = false
+
+    # @teams = @tournament.teams.select { |team| team_ids.include?(team.id) }
+    #   .sort do |team1, team2|
+    #   if @court == 100 || @court == 101
+    #     team2.playoffs.to_i <=> team1.playoffs.to_i
+    #   else
+    #     team2.pool_diff <=> team1.pool_diff
+    #   end
+    # end
 
     respond_to do |format|
       format.html
@@ -121,6 +131,15 @@ class PoolplaysController < ApplicationController
       format.json { render json: @teams }
     end
   end
+
+  #takes in an array of Team ids for a court
+  #returns an array of Team objects sorted by record and point diff
+  #used for leaderboard and creating playoff
+
+
+
+  # similar to poolplay standings but uses the team playoffs attribute
+
 
   def poolplay_finished
     if @poolplay && @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
@@ -132,71 +151,9 @@ class PoolplaysController < ApplicationController
 
   end
 
-  def playoffs_finished
-    if @tournament.poolplays.select { |pool| pool.court_id >= 100 }.none? {|pool| pool.score.nil?}
-      Tournament.update(@tournament.id, closed: true)
-      teams = @tournament.final_results_list
-      update_users_points(teams, points_earned_kob(teams.length))
-    # else
-    #   render :playoffs
-    end
-    redirect_to playoffs_path(@tournament)
-
-  end
-
-  def playoffs
-    unless @tournament.playoffs_started
-      flash[:danger] = "You can not access that page"
-      redirect_to poolplay_path(@tournament)
-    end
-  end
-
-  def create_playoff_pool
-    kob = @tournament.tournament_type == 'kob'
-
-    if @tournament.poolplay_finished && !@tournament.playoffs_started
-      #[[3,4,1,2], [6,7,8,9]]
-      playoff_teams = @courts.keys.map do |court|
-        team_ids = get_teams_ids_from_court(@courts[court])
-        @tournament.teams.select do |team|
-          team_ids.include?(team.id)
-        end
-      end # creates a hash of Teams based on what court they played on
-
-      # passes Teams hash to class method create_playoffs
-        # creates playoff with kob set to true or false, true for kob playoffs, false for team playoffs
-      if Poolplay.create_playoffs_group(@tournament.id, sort_by_pool_diff(playoff_teams), kob)
-        Tournament.update(@tournament.id, playoffs_started: true)
-      else
-        flash[:danger] = "Something went wrong"
-        redirect_to pool_path(@tournament)
-      end
-    end
-    redirect_to playoffs_path(@tournament)
-      # playoffs = Poolplay.create_playoffs(@tournament, sort_by_pool_diff(teams))
-  end
-
-  def final_results
-    @winners = @tournament.final_results_list
-    @points = points_earned_kob(@winners.length)
-    respond_to do |format|
-      format.html
-      format.js
-      format.json { render json: @winners }
-    end
-  end
-
   private
     def set_tournament
       @tournament = Tournament.find(params[:id])
-      # if session[:tournament].nil? || session[:tournament][params[:id]].nil?
-      #   @tournament = Tournament.find(params[:id])
-      #   session[:tournament] = {}
-      #   session[:tournament][@tournament.id] = @tournament
-      # else
-      #   @tournament = session[:tournament][params[:id]]
-      #   binding.pry
-      # end
     end
 
     def start_pool_play_access
@@ -207,7 +164,7 @@ class PoolplaysController < ApplicationController
     end
 
     def set_poolplay
-      @poolplay = @tournament.get_pools_by_version("pool")
+      @poolplay = @tournament.poolplays
       if @poolplay.empty?
         redirect_to new_poolplay_path(@tournament.id)
       end
@@ -228,8 +185,12 @@ class PoolplaysController < ApplicationController
       end
     end
 
-    def poolplay_params
-      params.require(:poolplay).permit(:winner, :score)
+    # def game_params
+    #   params.require(:game).permit(:winner, :score)
+    # end
+
+    def render_results(game)
+      render(partial: 'shared/results_display', locals: {game: game})
     end
 
     def start_playoffs # all
@@ -240,25 +201,5 @@ class PoolplaysController < ApplicationController
         Tournament.update(@tournament.id, poolplay_finished: true)
         redirect_to(poolplay_path(@tournament))
       end
-    end
-
-    def set_playoffs # only: [:playoffs, :leaderboard, :edit]
-      if @tournament.playoffs_started
-        @playoffs = @tournament.get_pools_by_version("playoff")
-        @playoff_courts = divide_pool_by_courts(@playoffs)
-      end
-    end
-
-    def end_tournament
-      if !@tournament.closed && @tournament.playoffs_started && @tournament.poolplays.none? {|pool| pool.score.nil?}
-        Tournament.update(@tournament.id, closed: true)
-        teams = @tournament.final_results_list
-        update_users_points(teams, points_earned_kob(teams.length))
-        redirect_to playoffs_path(@tournament)
-      end
-    end
-
-    def render_results(game)
-      render(partial: 'results_display', locals: {game: game})
     end
 end

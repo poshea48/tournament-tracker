@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'games/index'
   get 'playoffs/index'
   get 'playoffs/new'
   get 'playoff/index'
@@ -21,8 +22,8 @@ Rails.application.routes.draw do
   post  '/tournaments/:id/poolplay_finished',  to: 'poolplays#poolplay_finished', as: :poolplay_finished
   get   '/tournaments/:id/leaderboard',        to: 'poolplays#leaderboard', as: :leaderboard
 
-  get   '/tournaments/:id/playoffs',             to: 'poolplays#playoffs', as: :playoffs
-  post  '/tournaments/:id/playoffs',             to: 'poolplays#create_playoff_pool'
+  get   '/tournaments/:id/playoffs',             to: 'playoffs#index', as: :playoffs
+  post  '/tournaments/:id/playoffs',             to: 'playoffs#create'
   patch '/tournaments/:id/playoffs',             to: 'poolplays#update_playoffs'
   put   '/tournaments/:id/playoffs',             to: 'poolplays#update_playoffs'
   get   '/tournaments/:id/playoffs/edit',        to: 'poolplays#edit',  as: :results_playoffs

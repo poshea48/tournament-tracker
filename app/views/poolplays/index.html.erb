@@ -1,20 +1,24 @@
-<% unless @tournament.poolplay_started %>
-  <% link_to "Create Pools", new_poolplay_path(@tournament.id) %>
-<% else %>
-  <h2 class="text-center">POOL PLAY</h2>
-  <div class="tournament-play-links">
-    <%= link_to "Tournament Home", tournament_path(@tournament.id) %>
-    <% if @tournament.playoffs_started %>
-      <%= link_to "Playoffs", playoffs_path(@tournament) %>
+  <% unless @tournament.poolplay_started %>
+    <% link_to "Create Pools", new_poolplay_path(@tournament.id) %>
+  <% else %>
+    <h2 class="text-center">POOL PLAY</h2>
+    <div class="tournament-play-links">
+      <%= link_to "Tournament Home", tournament_path(@tournament.id) %>
+      <% if @tournament.playoffs_started %>
+        <%= link_to "Playoffs", playoffs_path(@tournament) %>
+      <% end %>
+      <% if @tournament.closed %>
+        <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
+      <% end %>
+    </div>
+    <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
+      <%= render 'shared/kob_games_table', courts: @courts %>
+    <% else %>
+      <%= render 'shared/team_poolplay_table', courts: @courts %>
     <% end %>
-    <% if @tournament.closed %>
-      <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
-    <% end %>
-  </div>
-  <%= render 'games_table', courts: @courts %>
-<% end %>
+  <% end %>
 
-<% if @tournament.poolplay_finished && !@tournament.playoffs_started  && (@current_user && @current_user.admin?) %>
-  <%= link_to "Start Playoffs", playoffs_path(@tournament), method: 'post', class: "btn btn-lg btn-primary" %>
-<% end %>
-<%= link_to "", poolplay_finished_path(@tournament), method: 'post', id: 'poolplay_finished', type: 'hidden' %>
+  <% if @tournament.poolplay_finished && !@tournament.playoffs_started  && (@current_user && @current_user.admin?) %>
+    <%= link_to "Start Playoffs", playoffs_path(@tournament), method: 'post', class: "btn btn-lg btn-primary" %>
+  <% end %>
+  <%= link_to "", poolplay_finished_path(@tournament), method: 'post', id: 'poolplay_finished', type: 'hidden' %>

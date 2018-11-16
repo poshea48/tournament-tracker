@@ -1,2 +1,14 @@
-<h1>Playoffs#index</h1>
-<p>Find me in app/views/playoffs/index.html.erb</p>
+<h2 class="text-center">PLAYOFFS</h2>
+<div class="tournament-play-links">
+    <%= link_to "Tournament Home", tournament_path(@tournament.id) %>
+    <%= link_to "Pool Play", poolplay_path(@tournament.id) %>
+    <% if @tournament.closed %>
+      <%= link_to "Final Results", final_results_path(@tournament), remote: true, format: 'js' %>
+    <% end %>
+</div>
+<% if @tournament.tournament_type == 'kob' %>
+  <%= render 'shared/kob_games_table', courts: @playoff_courts %>
+<% else %>
+  <%= render 'team_playoff_bracket', playoff_games: @games %>
+<% end %>
+<%= link_to "", playoffs_finished_path(@tournament), method: 'post', id: 'playoffs_finished', type: 'hidden' %>

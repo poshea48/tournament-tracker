@@ -10,27 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_31_192105) do
+ActiveRecord::Schema.define(version: 2018_11_03_012901) do
 
-  create_table "playoffs", force: :cascade do |t|
+  create_table "games", force: :cascade do |t|
     t.integer "tournament_id"
+    t.integer "court_id"
     t.integer "round"
     t.string "team_ids"
     t.string "winner"
+    t.string "version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tournament_id"], name: "index_playoffs_on_tournament_id", unique: true
-  end
-
-  create_table "poolplays", force: :cascade do |t|
-    t.integer "tournament_id"
-    t.integer "court_id"
-    t.string "team_ids"
-    t.string "winner"
     t.string "score"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tournament_id"], name: "index_poolplays_on_tournament_id"
+    t.index ["tournament_id"], name: "index_games_on_tournament_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -41,6 +33,7 @@ ActiveRecord::Schema.define(version: 2018_10_31_192105) do
     t.integer "pool_diff", default: 0
     t.string "playoffs"
     t.string "place"
+    t.string "pool_record", default: "0-0"
     t.index ["tournament_id"], name: "index_teams_on_tournament_id"
     t.index ["user_id"], name: "index_teams_on_user_id"
   end
