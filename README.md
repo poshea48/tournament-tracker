@@ -6,21 +6,25 @@ Need to dos....
   x add teams to tournament
   x sort teams based on points
   x cap # of teams, close registration
-  - pool-play page
-    - pool-play db
-      - tournament_id, court_id, games (team_id vs team_id),
+  x pool-play page
+    x pool-play db
+      x tournament_id, court_id, games (team_id vs team_id),
         winner, score,
-    - pool-play controller (index, edit, update)
-      - index => create games if not already set up session?
-      - pool-play page (index)
-      - results form (edit)
-    - assigns teams to court
-    - randomly select games on each court
-    - alert("Happy with this selection?")
-  - game results with point diff.
-  - rankings
-  - pool play ends => seed for playoffs
+    x pool-play controller (index, edit, update)
+      x index => create games if not already set up session?
+      x pool-play page (index)
+      x results form (edit)
+    x assigns teams to court
+    x randomly select games on each court
+    x alert("Happy with this selection?")
+  x game results with point diff.
+  x rankings
+  x pool play ends => seed for playoffs
   - playoff bracket with teams
-  - results
-  - winner and points distributed
-  - close tournament
+  x results
+  x winner and points distributed
+  x close tournament
+  - create teams for non-kob poolplay
+  - create teams for non-kob playoffs
+  - create data structure format for playoffs team play
+  - 

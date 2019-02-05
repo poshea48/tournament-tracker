@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 2018_11_03_012901) do
     t.boolean "closed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "tournament_type"
+    t.string "tournament_type" # kob, team, or kob/team 
     t.boolean "poolplay_started", default: false
     t.boolean "poolplay_finished", default: false
     t.boolean "playoffs_started", default: false

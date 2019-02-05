@@ -9,6 +9,7 @@ class PlayoffsController < ApplicationController
   before_action :end_tournament
 
   def index
+    @game = 'playoffs'
   end
 
   def create
@@ -17,13 +18,14 @@ class PlayoffsController < ApplicationController
     end
 
     kob = @tournament.tournament_type == 'kob'
+
     courts = divide_pool_by_courts(@tournament.poolplays)
 
+    # sort poolplay
     playoff_teams = courts.keys.map do |court|
       team_ids = get_teams_ids_from_court(courts[court])
       poolplay_standings(team_ids, @tournament.teams).map {|team| team.id}
     end
-    binding.pry
 
      #[[3,4,1,2], [6,7,8,9]]creates an array of array of Teams based on what court they played on
      # and sorted by record then diff
@@ -31,9 +33,9 @@ class PlayoffsController < ApplicationController
       # creates playoff with kob set to true or false, true for kob playoffs, false for team playoffs
     pool = nil
     if kob
-      pool = Game.create_kob_playoffs(@tournament.id, playoff_teams)
+      pool = Game.create_kob_playoffs(@tournament)
     else
-      pool = Game.create_team_play_playoffs(@tournament.id, playoff_teams)
+      pool = Game.create_teams_playoffs(@tournament.id, playoff_teams)
     end
 
     if pool
@@ -46,9 +48,12 @@ class PlayoffsController < ApplicationController
   end
 
   def edit
-    game_id = params[:playoff_id]
-    @game = @tournament.get_pool(game_id.to_i)
+    game_id = params[:pool_id].to_i
+    @game = @tournament.playoffs.select {|game| game.id == game_id}.first
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
+    # @game = @tournament.get_pool(game_id.to_i)
+    # @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
+    # # @path =
 
     respond_to do |format|
       format.html
@@ -60,14 +65,14 @@ class PlayoffsController < ApplicationController
     game_id = params[:game_id]
     game = Game.find(game_id)
 
-    if params[:playoff][:winner].nil?
+    if params[:game][:winner].nil?
       flash[:danger] = "You need to select a winner"
-    elsif params[:playoff][:score].empty? || params[:playoff][:score].nil? || params[:playoff][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
+    elsif params[:game][:score].empty? || params[:game][:score].nil? || params[:game][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
       flash[:danger] = "Score entered incorrectly"
     else
       game.update(playoff_params)
       if game.save
-        update_team_pool_differentials(game, playoffs_started)
+        game.update_play(@tournament.tournament_type, true)
         ActionCable.server.broadcast 'results_channel',
                                       game: render_results(game),
                                       game_id: game.id,
@@ -77,7 +82,17 @@ class PlayoffsController < ApplicationController
       end
     end
 
-    redirect_to playoff_path(@tournament)
+    redirect_to playoffs_path(@tournament)
+  end
+
+  # only used if playoff style is kob
+  def leaderboard
+    @court = params["court_id"].to_i
+    @in_playoffs = true
+    pool = @tournament.playoffs.select { |pool| pool.court_id == @court }
+    team_ids = get_teams_ids_from_court(pool)
+    # function from private
+    @teams = playoff_kob_standings(team_ids, @tournament.teams)
   end
 
   def final_results
@@ -88,6 +103,17 @@ class PlayoffsController < ApplicationController
       format.js
       format.json { render json: @winners }
     end
+  end
+
+  def playoffs_finished
+    if @tournament.poolplays.select { |pool| pool.court_id >= 100 }.none? {|pool| pool.score.nil?}
+      Tournament.update(@tournament.id, closed: true)
+      teams = @tournament.final_results_list
+      update_users_points(teams, points_earned_kob(teams.length))
+    # else
+    #   render :playoffs
+    end
+    redirect_to playoffs_path(@tournament)
   end
 
   private
@@ -104,7 +130,7 @@ class PlayoffsController < ApplicationController
   end
 
   def playoff_params
-    params.require(:playoff).permit(:winner, :score)
+    params.require(:game).permit(:winner, :score)
   end
 
   def set_playoffs # only: [:playoffs, :leaderboard, :edit]
@@ -122,16 +148,7 @@ class PlayoffsController < ApplicationController
       end.reverse
   end
 
-  def playoffs_finished
-    if @tournament.poolplays.select { |pool| pool.court_id >= 100 }.none? {|pool| pool.score.nil?}
-      Tournament.update(@tournament.id, closed: true)
-      teams = @tournament.final_results_list
-      update_users_points(teams, points_earned_kob(teams.length))
-    # else
-    #   render :playoffs
-    end
-    redirect_to playoffs_path(@tournament)
-  end
+
 
   def end_tournament
     if !@tournament.closed && @tournament.playoffs_started && @tournament.games.none? {|pool| pool.score.nil?}

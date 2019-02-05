@@ -1,13 +1,15 @@
-<h3>Choose Players</h3>
-<%= form_tag(add_team_path(@tournament.id), method: :post)  do %>
-  <% @players.each do |player| %>
-    <div class="checkbox">
-      <label>
-        <%= check_box_tag "players[]", "#{player.id}-#{player.first_name}", false, class: "all_players" %>
-        <%= player.first_name.capitalize %>
-      </label>
-    </div>
-  <% end %>
+<div class="d-flex flex-column mt-3">
+  <h4>Choose Players</h4>
+  <%= form_tag(add_team_path(@tournament.id), method: :post)  do %>
+    <% @players.each do |player| %>
+      <div class="checkbox">
+        <label>
+          <%= check_box_tag "players[]", "#{player.id}-#{player.first_name}", false, class: "all_players" %>
+          <%= player.first_name.capitalize %>
+        </label>
+      </div>
+    <% end %>
 
-  <%= submit_tag "Add Player(s)", class: "btn btn-primary" %>
-<% end %>
+    <%= submit_tag "Add Player(s)", class: "btn btn-primary btn-block" %>
+  <% end %>
+</div>

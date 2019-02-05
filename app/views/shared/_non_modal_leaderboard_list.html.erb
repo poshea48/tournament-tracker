@@ -1,11 +1,3 @@
-<div class="modal-header flex-row">
-  <button type="button" class="close mr-2 ml-0 p-1" data-dismiss="modal" aria-hidden="true">×</button>
-  <% if @in_playoffs %>
-    <h3 class="modal-title" id="myModalLabel"><%= @court == 100 ? 'Championship' : 'Consolation'  %> Court</h3>
-  <% else %>
-    <h3 class="modal-title" id="myModalLabel">Leader Board: Court <%= @court  %></h3>
-  <% end %>
-</div>
 
 <div class="modal-body pt-0">
   <table class="table">
@@ -18,12 +10,12 @@
       </tr>
     </thead>
     <tbody>
-    <% @teams.each_with_index do |team, i| %>
+    <% teams.each_with_index do |team, i| %>
       <tr>
         <td><%=(i + 1).ordinalize %></td>
         <td><%= team.team_name %></td>
         <td><%= team.pool_record %></td>
-        <% if @in_playoffs %>
+        <% if in_playoffs %>
           <td> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></td>
         <% else %>
           <td><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>

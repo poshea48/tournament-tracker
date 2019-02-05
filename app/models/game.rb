@@ -81,11 +81,11 @@ class Game < ApplicationRecord
 
   # takes in teams array already sorted by record and diff
   # used in self.create_playoffs_group
-  def self.create_kob_playoffs(tournament_id, playoff_teams)
+  def self.create_kob_playoffs(tournament)
     playoffs = {}
     court = 100
 
-    sorted_teams = overall_poolplay_rankings(playoff_teams)
+    sorted_teams = overall_poolplay_rankings(tournament.teams)
     until sorted_teams.empty?
       playoffs[court] = sorted_teams.shift(4)
       court += 1
@@ -101,13 +101,14 @@ class Game < ApplicationRecord
   end
 
   #takes in array of array of Team objects already sorted
-  #return them seeded based on poolplay record and diff
-  def self.create_team_playoffs(tournament_id, teams)
+  #return an array of arrays of team ids sorted by record and diff
+  def self.create_teams_playoffs(tournament_id, teams)
     seeds = {}
     seed = 1
-    sorted_teams = overall_poolplay_rankings(playoff_teams)
-    until sorted_teams.empty?
-      seeds[seed] = sorted_teams.shift(2)
+    # sorted_teams = overall_poolplay_rankings(teams)
+    binding.pry
+    until teams.empty?
+      seeds[seed] = teams.shift(2)
       seed += 1
     end
     seeds # hash seed num as keys and array of 2 team ids as value
@@ -158,24 +159,25 @@ class Game < ApplicationRecord
   # seeds = {1: [1,4], 2: [3, 5]...}
   def self.save_team_play_to_database(tourn_id, seeds, version)
     bye = seeds.keys.size % 4 != 0 && version == "playoff"
-    Team.set_playoff_stats(seeds, bye)
-    seed_numbers = seeds.keys
-    if bye
-      seed_numbers.shift(2)
-    end
-
-    until seed_numbers.empty?
-      team1 = seeds[seed_numbers.shift].join("/")
-      team2 = seeds[seed_numbers.pop].join("/")
-      if Game.create( tournament_id: tourn_id,
-                   round: 1,
-                   team_ids: "#{team1}-#{team2}",
-                   version: version)
-      else
-        return false
-      end
-    end
-    true
+    binding.pry
+    # Team.set_playoff_stats(seeds, bye)
+    # seed_numbers = seeds.keys
+    # if bye
+    #   seed_numbers.shift(2)
+    # end
+    #
+    # until seed_numbers.empty?
+    #   team1 = seeds[seed_numbers.shift].join("/")
+    #   team2 = seeds[seed_numbers.pop].join("/")
+    #   if Game.create( tournament_id: tourn_id,
+    #                round: 1,
+    #                team_ids: "#{team1}-#{team2}",
+    #                version: version)
+    #   else
+    #     return false
+    #   end
+    # end
+    # true
   end
 
   private
@@ -252,22 +254,22 @@ class Game < ApplicationRecord
   # return one array of team ids with overall rankings [1,1,2,2,3,3,4,4] for example
 
   def self.overall_poolplay_rankings(teams)
-    result = []
+    # result = []
+    #
+    # loop do
+    #   seeds = []
+    #   teams.each do |court|
+    #     seeds.push(court.shift)
+    #   end
 
-    loop do
-      seeds = []
-      teams.each do |court|
-        seeds.push(court.shift)
-      end
-
-      seeds.sort_by! do |team|
+      teams.sort_by do |team|
         team_wins, team_losses = team.pool_record.split("-").map(&:to_i)
         [team_wins, team.pool_diff]
-      end.reverse!
-      result.push(seeds)
-      result.flatten
-      break if teams.all? {|team| team.empty?}
-    end
-    result.flatten.map {|team| team.id}
+      end.reverse
+    #   result.push(seeds)
+    #   result.flatten
+    #   break if teams.all? {|team| team.empty?}
+    # end
+    # result.flatten.map {|team| team.id}
   end
 end

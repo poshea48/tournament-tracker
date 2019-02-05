@@ -51,8 +51,7 @@ class Tournament < ApplicationRecord
       winners = winners_court_team_ids.map do |team_id|
         self.teams.select {|team| team.id == team_id}.first
       end.sort { |team1, team2| team2.playoffs.to_i <=> team1.playoffs.to_i }
-
-      if playoffs_games.length > 3 # for more than 1 court(3 games per court for kob)
+      if games.length > 3 # for more than 1 court(3 games per court for kob)
         losers_court_team_ids = get_team_ids(games.select { |pool| pool.court_id != 100}.first)
 
         # takes all teams that were not on winners courts and sorts them by diff regardless of which court they were on

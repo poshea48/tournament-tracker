@@ -1,26 +1,32 @@
-<% if @user && @user.admin? %>
-  <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
-<% end %>
-<table class="table row">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Date</th>
-      <th scope="col">Type</th>
-      <th scope="col">Registration</th>
-      <th scope="col">Results</th>
-      <% if @user && @user.admin? %>
-        <th scope="col">Action</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @tournaments.empty? %>
-      <tr>
-        <td colspan="4">No Tournaments</td>
-      </tr>
-    <% else %>
-      <%= render @tournaments, cache: true %>
-    <% end %>
-  </tbody>
-</table>
+<div id="tournament-list" class="d-flex flex-column">
+  <% if @user && @user.admin? %>
+  <div class="admin-create p-1">
+    <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
+  </div>
+  <% end %>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Date</th>
+          <th scope="col">Type</th>
+          <th scope="col">Registration</th>
+          <th scope="col">Results</th>
+          <% if @user && @user.admin? %>
+            <th scope="col">Action</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @tournaments.empty? %>
+          <tr>
+            <td colspan="4">No Tournaments</td>
+          </tr>
+        <% else %>
+          <%= render @tournaments, cache: true %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

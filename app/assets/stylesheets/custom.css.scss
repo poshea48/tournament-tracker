@@ -1,17 +1,29 @@
-@import "bootstrap-sprockets";
+// @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "font-awesome";
 
 html {
   height: 100%;
+  width: 100%;
 }
 body {
   font-size: 14px;
   font-family: sans-serif;
   margin: 0;
   padding: 0;
-  height: 100%;
+  width: 100%;
 }
+
+#App {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#app-content {
+  flex: 1 auto;
+}
+
 
 #container {
   min-height: 100%;
@@ -20,10 +32,15 @@ body {
 
 #main {
   padding-bottom: 50px;
+  flex: 1 auto;
+  margin-top: 30px;
 }
 
 a {
     text-decoration: none !important;
+}
+
+.table {
 }
 
 #temp_pool_location {
@@ -48,10 +65,16 @@ a {
   max-width: 400px;
 }
 
-#modal_button {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.modal-header {
+  justify-content: flex-start !important;
+  border-bottom: none;
 }
+
+// .close {
+//   margin: 0 2rem 0 0 !important;
+//   padding: 1rem !important;
+// }
+
 
 ul {
   list-style: none;
@@ -74,16 +97,25 @@ ul {
   }
 }
 
+#non_modal_leaderboard {
+  tr {
+    height: 20px;
+  }
+
+  td, th {
+    padding: .5rem;
+
+  }
+}
+
 #players {
   max-width: 600px;
 }
 
 #footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   height: 50px;
-  background-color: #f8f8f8;
+  background-color: #343a40;
   border: 1px solid #e7e7e7;
   color: white;
   text-align: center;
@@ -91,25 +123,40 @@ ul {
 
 /*****  Navbar ******/
 
-.nav > li > span {
-  position: relative;
-  display: block;
-  padding: 15px 15px;
-  color: #777;
+.navbar-toggler{
+  padding: 0.25em 0.5em !important;
+  color: #fff !important;
+  border-color: #fff !important;
 }
 
+.nav-item {
+  color: #fff !important;
+  // align-self: center;
+}
 
-
+// .fa.fa-navicon {
+//   color:white;
+// }
 /******* New Tournament Form ********/
 
 .form_container {
-  display: flex;
-  max-width: 800px;
-  margin: 50px auto;
-  justify-content: center;
-  border: 2px solid dodgerblue;
-  border-radius: 5px;
+  max-width: 500px;
+  margin: 25px auto;
+  padding: 3em 5em;
+  // margin: 50px auto;
+  // justify-content: center;
+  border: 2px solid #343a40;
+  border-radius: 20px;
 }
+
+.auth {
+  // width: 500px;
+  padding: 3em 1em;
+  margin: 25px auto;
+}
+
+
+
 .form_layout {
   display: flex;
   flex-direction: column;
@@ -142,8 +189,11 @@ ul {
 }
 
 /******  Tournament Listings *******/
-table {
-  margin-left: 10px;
+.admin-create {
+  height: 35px;
+}
+.table-responsive {
+  border: none;
 }
 
 tr {
@@ -154,8 +204,8 @@ tbody tr:hover {
   background-color: #e7e7e7;
 }
 
-td a {
-  text-decoration: none;
+td {
+  text-align: left;
 }
 
 .action-row {
@@ -173,14 +223,39 @@ td a {
 }
 
 /**********  Show Tournament *********/
+.edit-tourn {
+  font-size: 14px;
+}
 .tournament-play-links {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   a {
     text-decoration: none;
     margin: 10px;
 
   }
+}
+
+/************  Game Play    ************/
+.scores {
+  max-width: 600px;
+}
+
+.court-play {
+  margin: 15px 0;
+}
+
+.court-title h3{
+  margin-right: .5em;
+}
+
+.court-title span {
+  align-self: center;
+}
+
+.leaderboard-link {
+  display: none;
 }
 
 /************  Sign up form ************/
@@ -240,8 +315,43 @@ td a {
   width: 100%;
 }
 
-// @media (max-width = 400) {
-//   .modal-content {
-//
-//   }
-// }
+@media only screen and (max-width: 850px) {
+  #non_modal_leaderboard {
+    display: none;
+  }
+
+  .leaderboard-link {
+    display: block;
+  }
+
+  .table-responsive {
+    flex: 0 0 100%;
+    max-width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .form_container {
+    padding: 3em 2em;
+  }
+
+}
+
+@media only screen and (max-width: 380px) {
+  .form_container {
+    padding: 3em 1em;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  h3 {
+    font-size: 22px;
+  }
+
+  h4 {
+    font-size: 20px;
+  }
+}

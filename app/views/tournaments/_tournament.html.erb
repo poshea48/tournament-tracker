@@ -1,7 +1,7 @@
 <tr data-id="<%= tournament.id %>">
   <td><%= link_to tournament.name, tournament_path(tournament)%></td>
   <td><%= tournament.date %></td>
-  <td><%= tournament.tournament_type == 'kob' ? 'KOB' : 'Team' %></td>
+  <td><%= tournament.tournament_type.upcase %></td>
   <td><%= tournament.registration_open ? 'Open' : 'Closed' %></td>
   <td>
     <% if tournament.closed %>

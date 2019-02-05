@@ -16,7 +16,7 @@ gem 'uglifier', '>= 1.3.0'
 # gem 'mini_racer', platforms: :ruby
 
 ###########  My Adds ########################
-gem 'bootstrap-sass'
+gem 'bootstrap', '~> 4.2', '>= 4.2.1'
 gem 'autoprefixer-rails'
 gem "font-awesome-rails"
 gem 'jquery-rails'

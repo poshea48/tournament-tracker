@@ -1,10 +1,11 @@
 <div class="tournament_title">
-  <h2 class="text-center"><%= @tournament.name %> - <%= @tournament.date %></h1>
-  <h3 class="text-center">TYPE: <%= @tournament.tournament_type.upcase %></h3>
-
-  <% if @user && @user.admin? %>
-    <h4 class="text-center"><%= link_to "Edit", edit_tournament_path(@tournament) %></h3>
-  <% end %>
+  <h2 class="text-center">
+    <%= @tournament.name %> - <%= @tournament.date %>
+    <% if @user && @user.admin? %>
+      <p class="text-center m-0 edit-tourn">(<%= link_to "Edit", edit_tournament_path(@tournament) %>)</p>
+    <% end %>
+  </h2>
+  <h4 class="text-center">TYPE: <%= @tournament.tournament_type.upcase %></h4>
 </div>
 <div class="tournament-play-links">
   <% if @tournament.poolplay_started %>
@@ -25,10 +26,10 @@
         <% else %>
           <th scope="col">Team</th>
         <% end %>
-        <th class="col">Points</th>
-        <th class="col">Latest Results</th>
+        <th scope="col">Points</th>
+        <th scope="col">Latest Results</th>
         <% if @user && @user.admin? && @tournament.registration_open %>
-          <th class="col">Remove Team</th>
+          <th scope="col">Remove Team</th>
         <% end %>
       </tr>
     </thead>

@@ -20,15 +20,16 @@ Rails.application.routes.draw do
   patch '/tournaments/:id/poolplay',           to: 'poolplays#update'
   put   '/tournaments/:id/poolplay',           to: 'poolplays#update'
   post  '/tournaments/:id/poolplay_finished',  to: 'poolplays#poolplay_finished', as: :poolplay_finished
-  get   '/tournaments/:id/leaderboard',        to: 'poolplays#leaderboard', as: :leaderboard
+  get   '/tournaments/:id/poolplay/leaderboard',   to: 'poolplays#leaderboard', as: :poolplay_leaderboard
 
   get   '/tournaments/:id/playoffs',             to: 'playoffs#index', as: :playoffs
   post  '/tournaments/:id/playoffs',             to: 'playoffs#create'
-  patch '/tournaments/:id/playoffs',             to: 'poolplays#update_playoffs'
-  put   '/tournaments/:id/playoffs',             to: 'poolplays#update_playoffs'
-  get   '/tournaments/:id/playoffs/edit',        to: 'poolplays#edit',  as: :results_playoffs
-  post  '/tournaments/:id/playoffs_finished',    to: 'poolplays#playoffs_finished', as: :playoffs_finished
-  get   '/tournaments/:id/final_results',        to: 'poolplays#final_results', as: :final_results
+  get   '/tournaments/:id/playoffs/edit',        to: 'playoffs#edit',  as: :results_playoffs
+  patch '/tournaments/:id/playoffs',             to: 'playoffs#update'
+  put   '/tournaments/:id/playoffs',             to: 'playoffs#update'
+  post  '/tournaments/:id/playoffs_finished',    to: 'playoffs#playoffs_finished', as: :playoffs_finished
+  get   '/tournaments/:id/final_results',        to: 'playoffs#final_results', as: :final_results
+  get   '/tournaments/:id/playoffs/leaderboard', to: 'playoffs#leaderboard', as: :playoffs_leaderboard
 
 
   # resources :users

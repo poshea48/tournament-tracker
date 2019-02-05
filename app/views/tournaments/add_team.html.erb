@@ -1,17 +1,13 @@
 <h2 class="text-center">Add Player to Tournament</h2>
-<div id="signup_form">
-  <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
-      <%= render 'shared/errors', object: @user %>
-      <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
-        <% if @user.admin %>
-          <%= render 'admin_player_form' %>
-        <% else %>
-          <%= render 'add_player_form' %>
-        <% end %>
-      <% else %>
-        <%= render 'add_team_form' %>
-      <% end %>
-    </div>
-  </div>
+<div class="signup_form ml-auto mr-auto">
+  <%= render 'shared/errors', object: @user %>
+  <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
+    <% if @user.admin %>
+      <%= render 'admin_player_form' %>
+    <% else %>
+      <%= render 'add_player_form' %>
+    <% end %>
+  <% else %>
+    <%= render 'add_team_form' %>
+  <% end %>
 </div>

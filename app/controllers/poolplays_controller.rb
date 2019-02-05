@@ -3,15 +3,27 @@ class PoolplaysController < ApplicationController
   include TournamentsHelper
   include GamePlayable
 
+  # creats @tournament
   before_action :set_tournament
+
+  # creates @poolplay
   before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results, :leaderboard]
+
+  # if still in poolplay sets Tournament poolplay_finished to true stays in poolplay_path
   before_action :start_playoffs
+
+  # restricts starting a new poolplay
   before_action :start_pool_play_access, only: [:new, :create_temporary_pool, :create]
+
+  #restricts access if Tournament is set to registration_open == false or
+  #there are no teams entered or team number is not divisiible by 4
   before_action :restrict_access
+
   before_action :validate_team_numbers, only: [:new, :create]
 
   def index
     @current_user = current_user
+    @game = 'poolplay'
   end
 
   def new
@@ -86,12 +98,14 @@ class PoolplaysController < ApplicationController
   def update
     game_id = params[:game_id].to_i
     game = Game.find(game_id)
+
     if params[:game][:winner].nil?
       flash[:danger] = "You need to select a winner"
     elsif params[:game][:score].empty? || params[:game][:score].nil? || params[:game][:score].match(/\A[2]\d+-\d{1,2}\z/).nil?
       flash[:danger] = "Score entered incorrectly"
     else
-      if game.update(game_params)
+      game.update(game_params)
+      if game.save
         # move out of Playable and into model(out of class method)
         game.update_play(@tournament.tournament_type, false)
         ActionCable.server.broadcast 'results_channel',
@@ -107,39 +121,16 @@ class PoolplaysController < ApplicationController
   end
 
   def leaderboard
-    @court = params["court_id"].to_i
-    # @in_playoffs = @court >= 100
-    pool = @tournament.poolplays.select { |pool| pool.court_id == @court }
-
-    team_ids = get_teams_ids_from_court(pool)
-
-    @teams = poolplay_standings(team_ids, @tournament.teams)
     @in_playoffs = false
-
-    # @teams = @tournament.teams.select { |team| team_ids.include?(team.id) }
-    #   .sort do |team1, team2|
-    #   if @court == 100 || @court == 101
-    #     team2.playoffs.to_i <=> team1.playoffs.to_i
-    #   else
-    #     team2.pool_diff <=> team1.pool_diff
-    #   end
-    # end
+    @kob = @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team'
+    @court = params["court_id"].to_i
+    @teams = get_court_standings(@court, 'poolplay', @tournament)
 
     respond_to do |format|
-      format.html
       format.js
-      format.json { render json: @teams }
+      format.html { redirect_to poolplay_path(@tournament)}
     end
   end
-
-  #takes in an array of Team ids for a court
-  #returns an array of Team objects sorted by record and point diff
-  #used for leaderboard and creating playoff
-
-
-
-  # similar to poolplay standings but uses the team playoffs attribute
-
 
   def poolplay_finished
     if @poolplay && @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
@@ -148,7 +139,6 @@ class PoolplaysController < ApplicationController
     #   render :index
     end
     redirect_to(poolplay_path(@tournament))
-
   end
 
   private
@@ -183,14 +173,6 @@ class PoolplaysController < ApplicationController
         flash[:danger] = "You do not have the right amount of teams.  Must be multiples of 4"
         redirect_to tournament_path(@tournament)
       end
-    end
-
-    # def game_params
-    #   params.require(:game).permit(:winner, :score)
-    # end
-
-    def render_results(game)
-      render(partial: 'shared/results_display', locals: {game: game})
     end
 
     def start_playoffs # all

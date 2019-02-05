@@ -1,48 +1,44 @@
+<div>
   <div class="form_container">
-    <%= form_for @tournament, html: {class: "form_layout", role: "form"} do |f| %>
+    <%= form_for @tournament, html: {class: "", role: "form"} do |f| %>
       <%= render 'shared/errors', object: @tournament %>
-      <div class=" form_table">
-        <div class="form_label">
-          <%= f.label :name %>
-        </div>
-        <div class="form_input">
-          <%= f.text_field :name, class: "", placeholder: "Name of Tournament", autofocus: true %>
+      <div class="form-group row">
+        <%= f.label :name, value: 'Name:', class: 'col-2 col-form-label' %>
+        <div class="col-10">
+          <%= f.text_field :name, class: "form-control", placeholder: "Name of Tournament", autofocus: true %>
         </div>
       </div>
-      <div class="form_table">
-        <div class="form_label">
-          <%= f.label :date %>
-        </div>
-        <div class="form_input">
-          <%= f.text_field :date, class: '', placeholder: "Date of Tournament" %>
+      <div class="form-group row">
+        <%= f.label :date, value: 'Date:', class: 'col-2 col-form-label' %>
+        <div class="col-10">
+          <%= f.date_field :date, class: 'form-control', placeholder: "Date of Tournament" %>
         </div>
       </div>
 
-      <div class="form_table">
-        <div class="form_label">
-          <%= f.label :type %>
-        </div>
-        <div class="form_radio">
-          <%= f.radio_button :tournament_type, 'kob' %>
-          <%= f.label :tournament_type_kob, 'KOB' %>
-        </div>
-        <div class="form_radio">
-          <%= f.radio_button :tournament_type, "team" %>
-          <%= f.label :tournament_type_team, "Team" %>
-        </div>
-        <div class="form_radio">
-          <%= f.radio_button :tournament_type, "kob/team" %>
-          <%= f.label :tournament_type_team, "KOB/Team" %>
+      <div class="form-group row">
+        <%= f.label :type, value: 'Type:', class: 'col-2 col-form-label' %>
+        <div class='col-10'>
+          <div class="form_radio">
+            <%= f.radio_button :tournament_type, 'kob' %>
+            <%= f.label :tournament_type_kob, 'KOB' %>
+          </div>
+          <div class="form_radio">
+            <%= f.radio_button :tournament_type, "team" %>
+            <%= f.label :tournament_type_team, "Team" %>
+          </div>
+          <div class="form_radio">
+            <%= f.radio_button :tournament_type, "kob/team" %>
+            <%= f.label :tournament_type_team, "KOB/Team" %>
+          </div>
         </div>
       </div>
-
-      <div class="form_table">
-        <div class="form_button">
-          <%= f.submit class: "btn btn-primary btn-sm pull-left" %>
+      <div class="form-group">
+        <div class="">
+          <%= f.submit class: "btn btn-primary btn-block" %>
         </div>
-        <div class="form_button">
+        <div class="mt-2">
           <% if @tournament.new_record? %>
-            <%= link_to "Cancel", root_path %>
+            <%= link_to "Cancel", root_path, class: "btn btn-danger btn-block"%>
           <% else %>
             <%= link_to "Cancel", tournament_path(@tournament) %>
           <% end %>
@@ -50,3 +46,4 @@
       </div>
     <% end %>
   </div>
+</div>
