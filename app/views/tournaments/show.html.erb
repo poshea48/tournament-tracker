@@ -1,11 +1,14 @@
 <div class="tournament_title">
   <h2 class="text-center">
-    <%= @tournament.name %> - <%= @tournament.date %>
-    <% if @user && @user.admin? %>
-      <p class="text-center m-0 edit-tourn">(<%= link_to "Edit", edit_tournament_path(@tournament) %>)</p>
-    <% end %>
+    <%= @tournament.name %>
   </h2>
+  <h3 class="text-center"><%= normalize_date_title(@tournament.date) %></h3>
   <h4 class="text-center">TYPE: <%= @tournament.tournament_type.upcase %></h4>
+  <% if @user && @user.admin? %>
+    <div class="text-center">
+      <small class="text-center m-0 edit-tourn">(<%= link_to "Edit", edit_tournament_path(@tournament) %>)</small>
+    </div>
+  <% end %>
 </div>
 <div class="tournament-play-links">
   <% if @tournament.poolplay_started %>
@@ -26,7 +29,7 @@
         <% else %>
           <th scope="col">Team</th>
         <% end %>
-        <th scope="col">Points</th>
+        <th scope="col">Total Points</th>
         <th scope="col">Latest Results</th>
         <% if @user && @user.admin? && @tournament.registration_open %>
           <th scope="col">Remove Team</th>
@@ -34,7 +37,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= render partial: 'tournaments/team', collection: sort_teams_by_points(@tournament.teams), cache: true %>
+      <%= render partial: 'tournaments/team', collection: sort_teams_by_points(@tournament.poolplay_team_objects), cache: true %>
     </tbody>
   </table>
 <% end %>

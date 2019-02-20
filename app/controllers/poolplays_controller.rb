@@ -5,6 +5,7 @@ class PoolplaysController < ApplicationController
 
   # creats @tournament
   before_action :set_tournament
+  before_action :set_user
 
   # creates @poolplay
   before_action :set_poolplay, except: [:new, :create, :create_temporary_pool, :final_results, :leaderboard]
@@ -36,17 +37,14 @@ class PoolplaysController < ApplicationController
   def create_temporary_pool
     type = @tournament.tournament_type
     if type == 'kob' || 'kob/team'
-      @temp_pool_now = Game.create_random_kob_poolplay(@tournament)
+      @temp_pool_now = @tournament.create_random_kob_poolplay()
       #{1: [3, 4, 8, 5], 2: [1, 2, 7, 6]}
     else
-      @temp_pool_now = Game.create_random_team_poolplay(@tournament)
+      @temp_pool_now = @tournament.create_random_team_poolplay()
     end
     session[:temp_pool] = @temp_pool_now
 
-    @temp_pool_now
     respond_to do |format|
-      # format.js {render layout: false}
-      # binding.pry
       format.html { redirect_to new_poolplay_path @tournament.id }
       format.js {}
       format.json { render json: @temp_pool_now}
@@ -61,9 +59,10 @@ class PoolplaysController < ApplicationController
 
     if session[:temp_pool]
       if kob
-        pool = Game.save_kob_to_database(@tournament.id, params["pool"], "poolplay")
+        pool = @tournament.save_kob_games_to_database(params["pool"], "poolplay")
+        @tournament.update_team_court_id(params["pool"])
       else
-        pool = Game.save_team_play_to_database(@tournament.id, params["pool"], "poolplay")
+        pool = @tournament.save_team_play_to_database(params["pool"], "poolplay")
       end
     else
       if kob
@@ -86,7 +85,7 @@ class PoolplaysController < ApplicationController
 
   def edit
     game_id = params[:pool_id].to_i #|| params[:playoff_id]
-    @game = @tournament.poolplays.select {|game| game.id == game_id}.first
+    @game = @tournament.poolplay_games.select {|game| game.id == game_id}.first
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
 
     respond_to do |format|
@@ -121,15 +120,9 @@ class PoolplaysController < ApplicationController
   end
 
   def leaderboard
-    @in_playoffs = false
-    @kob = @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team'
     @court = params["court_id"].to_i
-    @teams = get_court_standings(@court, 'poolplay', @tournament)
-
-    respond_to do |format|
-      format.js
-      format.html { redirect_to poolplay_path(@tournament)}
-    end
+    @in_playoffs = false
+    @teams = @tournament.get_court_standings(@court, @in_playoffs)
   end
 
   def poolplay_finished
@@ -146,6 +139,10 @@ class PoolplaysController < ApplicationController
       @tournament = Tournament.find(params[:id])
     end
 
+    def set_user
+      @user = current_user
+    end
+
     def start_pool_play_access
       if @tournament.poolplay_started
         flash[:danger] = "You can not access this page, pool play has already started"
@@ -154,7 +151,7 @@ class PoolplaysController < ApplicationController
     end
 
     def set_poolplay
-      @poolplay = @tournament.poolplays
+      @poolplay = @tournament.poolplay_games
       if @poolplay.empty?
         redirect_to new_poolplay_path(@tournament.id)
       end

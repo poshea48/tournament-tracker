@@ -45,12 +45,22 @@ module PoolplaysHelper
     end
   end
 
+  def get_kob_court_standings_poolplay(court_id)
+    team_ids = self.poolplay_teams.select { |pool| pool.court_id == court_id && pool.version === 'poolplay'}
+    team_ids = get_team_ids_from_court()
+  end
+
+  def get_kob_court_standings_playoffs(court_id)
+    pool = tournament.playoff_games.select { |pool| pool.court_id == court_id }
+
+  end
+
   def get_court_standings(court_id, stage, tournament)
     pool = nil
     if stage == 'poolplay'
-      pool = tournament.poolplays.select { |pool| pool.court_id == court_id}
+      pool = tournament.poolplay_games.select { |pool| pool.court_id == court_id}
     else
-      pool = tournament.playoffs.select { |pool| pool.court_id == court_id }
+      pool = tournament.playoff_games.select { |pool| pool.court_id == court_id }
     end
     team_ids = get_teams_ids_from_court(pool)
     poolplay_standings(team_ids, tournament.teams)

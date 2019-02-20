@@ -1,10 +1,9 @@
 class UsersController < ApplicationController
-  # before_action :set_user, only: [:show, :edit, :index]
-  before_action :make_read_only, except: [:index]
+  before_action :set_user#, only: [:show, :edit, :index, :edit_password, :update_password]
+  before_action :make_read_only, only: [:new]
 
   def index
     @users = User.all.sort_by {|player| player.points}.reverse
-    @user = current_user
   end
 
   def new
@@ -33,15 +32,48 @@ class UsersController < ApplicationController
   end
 
   def show
+    restrict_access(params[:id].to_i)
   end
 
   def edit
   end
 
+  def update
+
+  end
+
+  def edit_password
+    restrict_access(params[:id].to_i)
+
+    @user = current_user
+
+  end
+
+  def update_password
+    @user = current_user
+
+    @user.update(user_params)
+    
+    if @user.save
+      flash[:success] = "You have changed your password"
+      redirect_to player_path(@user)
+    else
+      flash.now[:danger] = "Password not changed"
+      render 'edit_password'
+    end
+  end
+
   private
 
     def set_user
-      @user = User.find(params[:id])
+      @user = current_user
+    end
+
+    def restrict_access(profile_id)
+      if @user.id != profile_id
+        flash[:danger] = "You do not have access to that page"
+        redirect_to root_path
+      end
     end
 
     def user_params

@@ -39,32 +39,27 @@ class TournamentsController < ApplicationController
       flash[:danger] = "Registration is closed"
       redirect_to tournament_path(@tournament)
     end
-
-    if @tournament.tournament_type == 'kob'
-      @player = User.new
-    else
-      @player1 = User.new
-      @player2 = User.new
-    end
   end
 
+
   def add_to_tournament
-    if params[:players]
-      params[:players].each do |player|
-        player_id, player_name = player.split("-")
-        add_team_to_database(player_id, player_name)
-      end
-      flash[:success] = "#{'Player'.pluralize(params[:players].length)} added"
-    else
-      @player = User.find_by_email(params[:email])
-      if @player
-        add_team_to_database(@player.id, @player.first_name)
-        flash[:success] = "Player has been added"
+    if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team'
+      if params[:players] # adding mulitple players (only admin)
+        params[:players].each do |player|
+          player_id, player_name = player.split("-")
+          @tournament.save_kob_team_to_database(player_id, player_name, 0, false)
+        end
+        flash[:success] = "#{'Player'.pluralize(params[:players].length)} added"
+        redirect_to tournament_path(@tournament)
       else
-        flash[:danger] = "Player could not be found"
+        @players = User.available_users(@tournament.id)
+        flash[:danger] = "You didnt add any players"
+        render :add_team
       end
+    else
+      flash[:danger] = "Not ready for that functionality yet"
+      redirect_to tournament_path(@tournament)
     end
-    redirect_to tournament_path(@tournament)
   end
 
   def update
@@ -84,6 +79,7 @@ class TournamentsController < ApplicationController
   end
 
   def delete_team
+    binding.pry
     Team.find(params[:team_id]).destroy
     flash[:info] = "Team has been removed"
     redirect_to tournament_path(@tournament)
@@ -132,13 +128,6 @@ class TournamentsController < ApplicationController
       @teams = @tournament.sort_teams_by_points
     end
 
-    def add_team_to_database(player_id, team_name)
-      if @tournament.tournament_type = "kob"
-        Team.create(user_id: player_id, tournament_id: @tournament.id,
-                    team_name: team_name, playoffs: '0' )
-      else
-        Team.create(user_id: player_id, tournament_id: @tournament.id,
-                    team_name: team_name )
-      end
-    end
+
+
 end

@@ -9,9 +9,9 @@
       <td><%= team.total_points %></td>
       <td>N/A</td>
 
-      <% if @user && @user.admin? && @tournament.registration_open %>
+      <% if @user && @user.admin? && @tournament.registration_open && !@tournament.closed %>
         <td>
-          <%= link_to delete_team_path(@tournament.id, team_id: team.id), method: "delete", remote: true do %>
+          <%= link_to delete_team_path(@tournament, team_id: team.id), method: "delete", remote: true do %>
             <i class="fa fa-trash fa-2x text-danger" ></i>
           <% end %>
         </td>

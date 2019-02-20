@@ -2,7 +2,6 @@
 <div>
   <div class="form_container">
     <%= form_for(:session, url: login_path, html: {method: 'post', role: 'form'}) do |f| %>
-      <%= render 'shared/errors', object: @user %>
       <div class="form-group row">
         <%= f.label :email, value: "Email:" , class: 'col-3 col-form-label' %>
         <div class="col-9">

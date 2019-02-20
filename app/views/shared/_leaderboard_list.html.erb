@@ -23,11 +23,7 @@
         <td><%=(i + 1).ordinalize %></td>
         <td><%= team.team_name %></td>
         <td><%= team.pool_record %></td>
-        <% if @in_playoffs %>
-          <td> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></td>
-        <% else %>
-          <td><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>
-        <% end %>
+        <td><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>
       </tr>
     <% end %>
     </tbody>

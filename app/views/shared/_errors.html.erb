@@ -1,6 +1,5 @@
 <% if object.errors.any? %>
-  <div class="row">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger col-12">
       <h5>Fix the following <%= pluralize(object.errors.count, "error") %>:</h5>
       <ul>
         <% object.errors.full_messages.each do |msg| %>
@@ -8,5 +7,4 @@
         <% end %>
       </ul>
     </div>
-  </div>
 <% end %>

@@ -2,6 +2,9 @@
 @import "bootstrap";
 @import "font-awesome";
 
+.field_with_errors {
+  display: inline-table !important;
+}
 html {
   height: 100%;
   width: 100%;

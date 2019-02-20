@@ -24,4 +24,7 @@ class SessionsController < ApplicationController
     end
     redirect_to tournaments_path
   end
+
+  private
+
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_03_012901) do
+ActiveRecord::Schema.define(version: 2019_02_12_013130) do
 
   create_table "games", force: :cascade do |t|
     t.integer "tournament_id"
@@ -31,9 +31,10 @@ ActiveRecord::Schema.define(version: 2018_11_03_012901) do
     t.integer "player2_id"
     t.string "team_name"
     t.integer "pool_diff", default: 0
-    t.string "playoffs"
+    t.boolean "playoffs", default: false
     t.string "place"
     t.string "pool_record", default: "0-0"
+    t.integer "court_id"
     t.index ["tournament_id"], name: "index_teams_on_tournament_id"
     t.index ["user_id"], name: "index_teams_on_user_id"
   end
@@ -45,7 +46,7 @@ ActiveRecord::Schema.define(version: 2018_11_03_012901) do
     t.boolean "closed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "tournament_type" # kob, team, or kob/team 
+    t.string "tournament_type"
     t.boolean "poolplay_started", default: false
     t.boolean "poolplay_finished", default: false
     t.boolean "playoffs_started", default: false

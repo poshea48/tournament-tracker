@@ -41,6 +41,12 @@ Rails.application.routes.draw do
   patch '/players/:id',    to: 'users#update'
   put '/players/:id',      to: 'users#update'
 
+  get   '/players/:id/edit_password', to: 'users#edit_password', as: :edit_password
+  patch '/players/:id/edit_password', to: 'users#update_password'
+  put   '/players/:id/edit_password', to: 'users#update_password'
+
+
+
 
   get  '/login',  to: 'sessions#new'
   post '/login',  to: 'sessions#create'
