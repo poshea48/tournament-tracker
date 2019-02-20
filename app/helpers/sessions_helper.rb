@@ -19,11 +19,11 @@ module SessionsHelper
     !!current_user
   end
 
+  # removed remember_token column from db
   def remember(user)
     user.remember
-    cookies.permanent.signed[:user_id] = user.id
-    # removed remember_token column from db 
-    # cookies.permanent[:remember_token] = user.remember_token
+    cookies.signed[:user_id] = { value: user.id, expires: 24.hours }
+    cookies[:remember_token] = { value: user.remember_token, expires: 24.hours }
   end
 
   def forget(user)
