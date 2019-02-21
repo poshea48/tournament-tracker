@@ -40,9 +40,6 @@ class PlayoffsController < ApplicationController
     game_id = params[:pool_id].to_i
     @game = @tournament.playoff_games.select {|game| game.id == game_id}.first
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
-    # @game = @tournament.get_pool(game_id.to_i)
-    # @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
-    # # @path =
 
     respond_to do |format|
       format.html
@@ -83,7 +80,7 @@ class PlayoffsController < ApplicationController
 
   def final_results
     @winners = @tournament.final_results_list
-    @points = points_earned_kob(@winners.length)
+    @points = @tournament.points_earned_kob
     respond_to do |format|
       format.html
       format.js
@@ -93,11 +90,7 @@ class PlayoffsController < ApplicationController
 
   def playoffs_finished
     if @tournament.playoff_games.none? {|pool| pool.score.nil?}
-      Tournament.update(@tournament.id, closed: true)
-      teams = @tournament.final_results_list
-      update_users_points(teams, points_earned_kob(teams.length))
-    # else
-    #   render :playoffs
+      end_tournament
     end
     redirect_to playoffs_path(@tournament)
   end
@@ -130,27 +123,10 @@ class PlayoffsController < ApplicationController
     end
   end
 
-  def playoff_kob_standings(team_ids, teams)
-    teams.select { |team| team_ids.include?(team.id) }
-      .sort_by do |team|
-        team_wins, diff = team.playoffs.split("-").map(&:to_i)
-        [team_wins, team.pool_diff]
-      end.reverse
-  end
-
   def end_tournament
     if !@tournament.closed && @tournament.playoff_games.none? {|pool| pool.score.nil?}
-      Tournament.update(@tournament.id, closed: true)
-      teams = @tournament.final_results_list #
-      update_users_points(teams, points_earned_kob(teams.length))
+      @tournament.end
       redirect_to playoffs_path(@tournament)
-    end
-  end
-
-  def update_users_points(teams, points)
-    teams.each_with_index do |team, i|
-      user = team.user
-      user.update!(points: user.points + points[i])
     end
   end
 end

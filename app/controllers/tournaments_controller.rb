@@ -79,7 +79,6 @@ class TournamentsController < ApplicationController
   end
 
   def delete_team
-    binding.pry
     Team.find(params[:team_id]).destroy
     flash[:info] = "Team has been removed"
     redirect_to tournament_path(@tournament)
@@ -95,9 +94,8 @@ class TournamentsController < ApplicationController
     end
   end
 
-
-
   protected
+
   def resource_not_found(error)
     flash[:danger] = "The tournament you are looking for could not be found"
     redirect_to root_path
@@ -127,7 +125,4 @@ class TournamentsController < ApplicationController
     def set_teams
       @teams = @tournament.sort_teams_by_points
     end
-
-
-
 end

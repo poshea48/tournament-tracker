@@ -32,18 +32,18 @@ module PoolplaysHelper
     @tournament.teams.select {|player| player.id == player1 || player.id == player2 }.map(&:team_name).join("/")
   end
 
-  def points_earned_kob(num_of_teams)
-    if num_of_teams == 4
-      return [100, 50, 25, 20]
-    else
-      points = [100, 50, 25, 20, 20]
-
-      until points.length == num_of_teams
-        points << 10
-      end
-      return points
-    end
-  end
+  # def points_earned_kob(num_of_teams)
+  #   if num_of_teams == 4
+  #     return [100, 50, 25, 20]
+  #   else
+  #     points = [100, 50, 25, 20, 20]
+  #
+  #     until points.length == num_of_teams
+  #       points << 10
+  #     end
+  #     return points
+  #   end
+  # end
 
   def get_kob_court_standings_poolplay(court_id)
     team_ids = self.poolplay_teams.select { |pool| pool.court_id == court_id && pool.version === 'poolplay'}
@@ -84,11 +84,4 @@ module PoolplaysHelper
     group = teams.select { |team| team_ids.include?(team.id) }
     sort_teams_by_record_points(group)
   end
-
-  # input [[3,4,1,2], [6,7,8,9]]
-  # def sort_by_pool_diff(teams)
-  #   sorted = []
-  #   teams.each do |court|
-  #     sorted.push(court.map {|team| team.})
-  # end
 end

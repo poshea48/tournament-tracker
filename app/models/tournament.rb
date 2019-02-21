@@ -37,8 +37,6 @@ class Tournament < ApplicationRecord
     sort_group_of_teams(self.teams.select {|team| team.court_id == court_id && team.playoffs == playoff_bool })
   end
 
-
-
   # final results for kob tournament
   def final_results_list
     winners = sort_group_of_teams(self.teams.select { |team| team.playoffs && team.court_id == 100 })
@@ -112,7 +110,6 @@ class Tournament < ApplicationRecord
     seeds = {}
     seed = 1
     sorted_teams = final_poolplay_rankings_by_user_id
-    binding.pry
     # creates an array of all teams in tournament sorted by record then points
     until sorted_teams.empty?
       ## remove first 2 teams
@@ -164,6 +161,27 @@ class Tournament < ApplicationRecord
   def save_kob_team_to_database(player_id, team_name, court_id, version)
     Team.create(user_id: player_id, tournament_id: self.id,
                 team_name: team_name, court_id: court_id, playoffs: version )
+  end
+
+  def points_earned_kob
+    num_of_teams = self.teams.select { |team| team.playoffs }.length
+    if num_of_teams == 4
+      return [100, 50, 25, 20]
+    else
+      points = [100, 50, 25, 20, 20]
+      until points.length == num_of_teams
+        points << 10
+      end
+      return points
+    end
+  end
+
+  def end
+    self.update!(closed: true)
+    teams = self.final_results_list
+    points = self.points_earned_kob
+    # private method
+    update_users_points(teams, points)
   end
 
   private
@@ -248,5 +266,12 @@ class Tournament < ApplicationRecord
       games.push(game)
     end
     games
+  end
+
+  def update_users_points(teams, points)
+    teams.each_with_index do |team, i|
+      user = team.user
+      user.update!(points: user.points + points[i])
+    end
   end
 end
