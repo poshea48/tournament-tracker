@@ -49,4 +49,17 @@ class User < ApplicationRecord
     return false if remember_digest.nil?
     BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
+
+  def tournaments_played
+    # tournaments ids from past tournaments played in
+    # team-playoffs ids from
+    # just for kob tournaments now (lookup just user_id in Team)
+    Team.where(user_id: self.id, playoffs: true).map do |team|
+      tourn = Tournament.find_by_id(team.tournament_id)
+      points = tourn.points_earned_kob
+      place = team.place.to_i
+      points_earned = points[place - 1]
+      { tourn_name: tourn.name, tourn_id: tourn.id, tourn_date: tourn.date, place: place, points: points_earned }
+    end
+  end
 end

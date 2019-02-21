@@ -271,6 +271,7 @@ class Tournament < ApplicationRecord
   def update_users_points(teams, points)
     teams.each_with_index do |team, i|
       user = team.user
+      team.update!(place: i + 1)
       user.update!(points: user.points + points[i])
     end
   end

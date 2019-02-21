@@ -32,14 +32,18 @@ class UsersController < ApplicationController
   end
 
   def show
-    restrict_access(params[:id].to_i)
+    @player = User.find_by_id(params[:id])
+    players = User.all.sort_by {|player| player.points}.reverse
+    @ranking = players.index(@player) + 1
+    @tournaments = @player.tournaments_played
   end
 
   def edit
+    restrict_access(params[:id].to_i)
   end
 
   def update
-
+    restrict_access(params[:id].to_i)
   end
 
   def edit_password
@@ -53,7 +57,7 @@ class UsersController < ApplicationController
     @user = current_user
 
     @user.update(user_params)
-    
+
     if @user.save
       flash[:success] = "You have changed your password"
       redirect_to player_path(@user)

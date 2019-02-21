@@ -2,10 +2,13 @@
   <div class="col-md-8 mr-auto ml-auto">
     <div class="card card-body bg-info text-white mb-3">
       <div class="text-center">
-        <h1 class="display-4 text-center"><%= @user.first_name %> <%= @user.last_name %></h1>
+        <h1 class="display-4 text-center"><%= @player.first_name %> <%= @player.last_name %></h1>
+        <h5>Ranking: <%= @ranking.ordinalize %></h5>
         <div class="d-flex justify-content-around">
-          <span><%= link_to "Edit Profile", edit_player_path(@user), class: "text-dark" %></span>
-          <span><%= link_to "Change password", edit_password_path(@user), class: "text-dark" %></span>
+          <% if @user.id == @player.id %>
+            <span><%= link_to "Edit Profile", edit_player_path(@player), class: "text-dark" %></span>
+            <span><%= link_to "Change password", edit_password_path(@player), class: "text-dark" %></span>
+          <% end %>
         </div>
       </div>
     </div>
@@ -21,6 +24,15 @@
       </tr>
     </thead>
     <tbody>
+      <% if @tournaments.empty? %>
+        <tr>
+          <td colspan="4">N/A</td>
+        </tr>
+      <% else %>
+        <% @tournaments.each do |tourn| %>
+          <%= render 'tournament', tournament: tourn, cache: true %>
+        <% end %>
+      <% end %>
     </tbody>
   </table>
 </div>

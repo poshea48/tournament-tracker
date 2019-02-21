@@ -1,13 +1,22 @@
-<div class="table-responsive-sm">
-  <table id="players" class="table table-sm table-hover">
-    <thead>
-      <tr class="d-flex">
-        <th class="col-sm-4">Player</th>
-        <th class="col-sm-2">Total Points</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%= render @users, cache: true %>
-    </tbody>
-  </table>
+<div>
+  <div class="table-responsive ">
+    <table class="table align-center" id="players-list-table">
+      <thead>
+        <tr class="d-flex">
+          <th scope="col" class="col-6" >Player</th>
+          <th scope="col" class="col-3">Ranking</th>
+          <th scope="col" class="col-3">Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @users.empty? %>
+          <tr>
+            <td colspan="4">No Players</td>
+          </tr>
+        <% else %>
+          <%= render @users, cache: true %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
