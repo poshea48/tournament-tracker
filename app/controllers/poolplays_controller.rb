@@ -87,7 +87,9 @@ class PoolplaysController < ApplicationController
     game_id = params[:pool_id].to_i #|| params[:playoff_id]
     @game = @tournament.poolplay_games.select {|game| game.id == game_id}.first
     @team_1, @team_2 = team_name_with_team_number_array(@game.team_ids)
-
+    if @game.winner
+      @winner = @game.winner
+    end
     respond_to do |format|
       format.html
       format.js
@@ -97,6 +99,11 @@ class PoolplaysController < ApplicationController
   def update
     game_id = params[:game_id].to_i
     game = Game.find(game_id)
+
+    edited = ActiveRecord::Type::Boolean.new.cast(params[:edited])
+    if edited
+      game.update_play_for_editing(@tournament.tournament_type, false)
+    end
 
     if params[:game][:winner].nil?
       flash[:danger] = "You need to select a winner"
@@ -110,13 +117,15 @@ class PoolplaysController < ApplicationController
         ActionCable.server.broadcast 'results_channel',
                                       game: render_results(game),
                                       game_id: game.id,
-                                      playoffs: false
+                                      playoffs: false,
+                                      last_game: @poolplay && @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
+
       else
         flash[:danger] = "Score was not entered"
       end
     end
 
-    redirect_to poolplay_path(@tournament)
+    # render poolplay_path(@tournament)
   end
 
   def leaderboard
@@ -128,10 +137,9 @@ class PoolplaysController < ApplicationController
   def poolplay_finished
     if @poolplay && @poolplay.none? {|game| game["score"].nil? } && !@tournament.poolplay_finished
       Tournament.update(@tournament.id, poolplay_finished: true)
-    # else
-    #   render :index
+      redirect_to(poolplay_path(@tournament))
     end
-    redirect_to(poolplay_path(@tournament))
+    redirect_to poolplay_path(@tournament)
   end
 
   private

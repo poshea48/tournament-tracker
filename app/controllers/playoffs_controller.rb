@@ -50,6 +50,10 @@ class PlayoffsController < ApplicationController
   def update
     game_id = params[:game_id]
     game = Game.find(game_id)
+    edited = ActiveRecord::Type::Boolean.new.cast(params[:edited])
+    if edited
+      game.update_play_for_editing(@tournament.tournament_type, false)
+    end
 
     if params[:game][:winner].nil?
       flash[:danger] = "You need to select a winner"
@@ -62,13 +66,13 @@ class PlayoffsController < ApplicationController
         ActionCable.server.broadcast 'results_channel',
                                       game: render_results(game),
                                       game_id: game.id,
-                                      playoffs: true
+                                      playoffs: true,
+                                      last_game: @tournament.playoff_games.none? {|pool| pool.score.nil?}
       else
         flash[:danger] = "Score was not entered"
       end
     end
-
-    redirect_to playoffs_path(@tournament)
+    # redirect_to playoffs_path(@tournament)
   end
 
   # only used if playoff style is kob

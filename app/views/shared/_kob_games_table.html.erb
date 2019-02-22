@@ -30,8 +30,16 @@
               <tr id="pool_<%= game["id"] %>" data-pool_id="<%= game["id"] %>">
                 <td>
                   <%= create_game_title_from_team_ids(game["team_ids"]) %>
-                  <% if @current_user && @current_user.admin? && !@tournament.playoffs_started%>
-                    <%= link_to "(Edit)", "#" %>
+                  <% if game.version == 'playoff' && !@tournament.closed && @current_user && @current_user.admin? && game.score %>
+                    <%= link_to "(Edit)",
+                    results_playoffs_path(@tournament, pool_id: game["id"]),
+                    remote: true, data: { target: '#modal-window', toggle: 'modal'}
+                    %>
+                  <% elsif game.version == 'poolplay' && !@tournament.playoffs_started && @current_user && @current_user.admin? && game.score %>
+                    <%= link_to "(Edit)",
+                    results_poolplay_path(@tournament,pool_id: game["id"]),
+                    remote: true, data: { target: '#modal-window', toggle: 'modal'}
+                    %>
                   <% end %>
                 </td>
                 <% if game["score"].nil? %>
