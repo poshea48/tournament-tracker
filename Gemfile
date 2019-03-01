@@ -50,6 +50,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'database_cleaner'
   gem "pry"
+  gem 'rb-readline'
 end
 
 group :development do

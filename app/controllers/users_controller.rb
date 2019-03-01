@@ -74,7 +74,7 @@ class UsersController < ApplicationController
     end
 
     def restrict_access(profile_id)
-      if @user.id != profile_id
+      if @user.nil? || @user.id != profile_id
         flash[:danger] = "You do not have access to that page"
         redirect_to root_path
       end

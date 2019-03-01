@@ -5,7 +5,7 @@
         <h1 class="display-4 text-center"><%= @player.first_name %> <%= @player.last_name %></h1>
         <h5>Ranking: <%= @ranking.ordinalize %></h5>
         <div class="d-flex justify-content-around">
-          <% if @user.id == @player.id %>
+          <% if @user && (@user.id == @player.id) %>
             <span><%= link_to "Edit Profile", edit_player_path(@player), class: "text-dark" %></span>
             <span><%= link_to "Change password", edit_password_path(@player), class: "text-dark" %></span>
           <% end %>
