@@ -7,6 +7,9 @@ class TournamentsController < ApplicationController
   before_action :restrict_access, only: [:new, :create, :edit, :join, :destroy]
   # before_action :set_teams, only: [:show, :pool_play]
 
+  def landing
+    
+  end
   def index
     @tournaments = Tournament.all
   end
