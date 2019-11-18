@@ -11,7 +11,8 @@ class TournamentsController < ApplicationController
     
   end
   def index
-    @tournaments = Tournament.all
+    # @tournaments = Tournament.all
+    @tournaments = Tournament.all.order("date DESC")
   end
 
   def new
