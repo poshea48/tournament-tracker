@@ -27,20 +27,18 @@ body {
   flex: 1 auto;
 }
 
-
 #container {
   min-height: 100%;
   position: relative;
 }
 
 #main {
-  padding-bottom: 50px;
   flex: 1 auto;
   margin-top: 30px;
 }
 
 a {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 .table {
@@ -53,8 +51,8 @@ a {
 }
 
 .nopadding {
-   padding: 0 !important;
-   margin: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .action_button {
@@ -77,7 +75,6 @@ a {
   max-width: 500px;
   margin: 0 auto;
 }
-
 
 ul {
   list-style: none;
@@ -105,9 +102,9 @@ ul {
     height: 20px;
   }
 
-  td, th {
-    padding: .5rem;
-
+  td,
+  th {
+    padding: 0.5rem;
   }
 }
 
@@ -126,7 +123,7 @@ ul {
 
 /*****  Navbar ******/
 
-.navbar-toggler{
+.navbar-toggler {
   padding: 0.25em 0.5em !important;
   color: #fff !important;
   border-color: #fff !important;
@@ -157,8 +154,6 @@ ul {
   padding: 3em 1em;
   margin: 25px auto;
 }
-
-
 
 .form_layout {
   display: flex;
@@ -217,8 +212,7 @@ td {
 
 #delete {
   color: #e17e8e;
-  opacity: .8;
-
+  opacity: 0.8;
 }
 
 #delete:hover {
@@ -236,7 +230,6 @@ td {
   a {
     text-decoration: none;
     margin: 10px;
-
   }
 }
 
@@ -249,8 +242,8 @@ td {
   margin: 15px 0;
 }
 
-.court-title h3{
-  margin-right: .5em;
+.court-title h3 {
+  margin-right: 0.5em;
 }
 
 .court-title span {
@@ -263,7 +256,10 @@ td {
 
 /************  Sign up form ************/
 #signup_form {
-  input, textarea, select, .uneditable-input {
+  input,
+  textarea,
+  select,
+  .uneditable-input {
     border: 1px solid #bbb;
     border-radius: 5px;
     width: 100%;
@@ -279,9 +275,7 @@ td {
       border-color: red;
     }
   }
-
 }
-
 
 .signup_container {
   max-width: 500px;
@@ -337,7 +331,6 @@ td {
   .form_container {
     padding: 3em 2em;
   }
-
 }
 
 @media only screen and (max-width: 380px) {
