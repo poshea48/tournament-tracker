@@ -7,17 +7,17 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">Place</th>
-        <th scope="col">Player</th>
-        <th scope="col">Points Earned</th>
+        <th class="place" scope="col">Place</th>
+        <th class="player" scope="col">Player</th>
+        <th class="points" scope="col">Points Earned</th>
       </tr>
     </thead>
     <tbody>
     <% @winners.each_with_index do |team, i| %>
       <tr>
-        <td><%=(i + 1).ordinalize %></td>
-        <td><%= team.team_name %></td>
-        <td><%= @points[i] %></td>
+        <td class="place"><%=(i + 1).ordinalize %></td>
+        <td class="player"><%= team.team_name %></td>
+        <td class="points"><%= @points[i] %></td>
       </tr>
     <% end %>
     </tbody>

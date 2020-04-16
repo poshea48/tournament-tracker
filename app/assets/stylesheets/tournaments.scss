@@ -8,7 +8,6 @@
   flex-direction: column;
   max-width: 800px;
   width: 100%;
-  // min-width: 450px;
   margin: 0 auto;
   overflow-x: scroll;
 
@@ -30,13 +29,14 @@
       padding: 0.5em;
       border: none;
       flex-wrap: wrap;
-      overflow-x: scroll;
+      overflow-x: auto;
+      text-align: center;
     }
   }
 
   tbody {
     height: calc(100% - 35px);
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 // All Tournaments
@@ -56,7 +56,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 50%;
+  flex: 1 auto;
   .admin-create {
     position: absolute;
   }
@@ -85,13 +85,6 @@
     height: calc(100% - 240px);
     max-width: 500px;
     margin: 0 auto;
-
-    th {
-      padding: 0.5em;
-    }
-    tr {
-      display: flex;
-    }
   }
 }
 #tourn-header {
@@ -161,6 +154,17 @@
   }
 }
 
+.disclaimer {
+  text-align: center;
+}
+
+.tourn-actions {
+  display: flex;
+  justify-content: center;
+  a {
+    margin: 0 0.5em;
+  }
+}
 @media screen and (max-width: 650px) {
   .open {
     .admin-create {

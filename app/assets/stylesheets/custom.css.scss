@@ -218,12 +218,15 @@ ul {
   border: none;
 }
 
-tr {
-  height: 50px;
-}
-
 tbody tr:hover {
   background-color: #e7e7e7;
+}
+
+td,
+th {
+  display: flex;
+  justify-content: center;
+  align-self: center;
 }
 
 td {
