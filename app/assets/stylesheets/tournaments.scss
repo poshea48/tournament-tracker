@@ -105,16 +105,22 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 165px;
   .points {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
-    font-size: 12px;
     label {
-      width: 130px;
-      margin-right: 0.5em;
+      margin: 0;
+      height: 100%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
       text-transform: uppercase;
       font-weight: 900;
+      align-self: flex-start;
+      text-align: left;
+      flex-basis: 90%;
     }
   }
 }
@@ -182,10 +188,12 @@
 
 @media screen and (max-width: 550px) {
   .tourn-info {
-    justify-content: space-around;
+    justify-content: center;
     height: 75px;
   }
   #checks {
+    width: 135px;
+    margin-right: 1em;
     .points {
       flex-basis: calc(100% / 4);
       label {
