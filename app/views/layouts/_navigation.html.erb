@@ -6,7 +6,7 @@
     </span>
   </button>
   <div class="collapse navbar-collapse justify-content-stretch" id="navbarContent">
-    <div class="navbar-nav ml-auto">
+    <div class="navbar-nav">
       <% if user_logged_in? %>
         <%= link_to @user.first_name, player_path(@user), class: "nav-item nav-link"%>
         <%= link_to "Log out", logout_path, class: "nav-item nav-link" %>
@@ -14,11 +14,10 @@
         <%= link_to "Sign up", signup_path, class: "nav-item nav-link" %>
         <%= link_to "Log in", login_path, class: "nav-item nav-link" %>
       <% end %>
-        <%= link_to "Players", players_path, class: " nav-item nav-link" %>
+      <%= link_to "Players", players_path, class: " nav-item nav-link" %>
       <% if @user && @user.admin? %>
         <%= link_to "Create New Player", signup_path, class: "nav-item nav-link" %>
       <% end %>
-
     </div>
   </div>
 </nav>
