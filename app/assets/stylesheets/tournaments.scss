@@ -9,7 +9,7 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  overflow-x: scroll;
+  overflow: auto;
 
   thead {
     height: 35px;
@@ -29,14 +29,14 @@
       padding: 0.5em;
       border: none;
       flex-wrap: wrap;
-      overflow-x: auto;
+      overflow: auto;
       text-align: center;
     }
   }
 
   tbody {
     height: calc(100% - 35px);
-    overflow-y: auto;
+    overflow: auto;
   }
 }
 // All Tournaments
@@ -62,7 +62,7 @@
   }
 }
 .table-tourns {
-  overflow-x: auto;
+  overflow: auto;
 }
 
 // @media screen and (max-width: 450px) {
@@ -186,8 +186,6 @@
     height: 75px;
   }
   #checks {
-    top: 5em;
-    width: 145px;
     .points {
       flex-basis: calc(100% / 4);
       label {

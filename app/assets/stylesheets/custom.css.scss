@@ -222,6 +222,12 @@ tbody tr:hover {
   background-color: #e7e7e7;
 }
 
+tbody {
+  tr {
+    min-height: 50px;
+  }
+}
+
 td,
 th {
   display: flex;
@@ -322,13 +328,14 @@ td {
       }
     }
     tbody {
+      tr {
+        height: 35px !important;
+        min-height: unset;
+      }
       td {
         text-align: center;
       }
     }
-  }
-  tr {
-    height: 20px;
   }
 
   td,
