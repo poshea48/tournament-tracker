@@ -146,12 +146,12 @@ ul {
     position: absolute;
     right: 0;
     top: 50px;
-    padding: 0.5em 1em;
     background: #343a40;
     width: 100%;
     z-index: 30;
     .navbar-nav {
       align-items: flex-end;
+      padding: 0.5em 1em;
     }
   }
 }
