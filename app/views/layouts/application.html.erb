@@ -5,11 +5,9 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
   <body>
     <div id="modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -17,18 +15,16 @@
       </div>
     </div>
     <div id="App">
-        <%= render 'layouts/navigation' %>
-        <div id="main">
-            <div id="main-content"class="col-md-12 d-flex flex-column">
-              <% flash.each do |name, msg| %>
-                <div class="text-center alert alert-<%= name %>">
-                  <%= msg %>
-                </div>
-              <% end %>
-              <%= yield %>
-            </div>
-        </div>
-        <footer id="footer"></footer>
+      <%= render 'layouts/navigation' %>
+      <div id="main">
+        <% flash.each do |name, msg| %>
+          <div class="text-center alert alert-<%= name %>">
+            <%= msg %>
+          </div>
+        <% end %>
+        <%= yield %>
+      </div>
+      <footer id="footer"></footer>
     </div>
   </body>
 </html>

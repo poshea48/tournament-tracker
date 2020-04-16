@@ -92,10 +92,9 @@
     * Total number of players needs to be a multiple of 4 to start pool play
   </p>
 
-  <div class="action_button">
     <% if @current_user && @current_user.admin? && !@tournament.poolplay_started
     %>
-    <div class="">
+    <div class="tourn-actions">
       <% if @tournament.registration_open %> <%= link_to "Add
       #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}",
       add_team_path(@tournament.id), class: "btn btn-md btn-success" %> <% end
@@ -107,6 +106,5 @@
     </div>
 
     <% end %>
-  </div>
 
 </div>
