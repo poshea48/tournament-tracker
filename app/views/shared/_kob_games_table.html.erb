@@ -19,16 +19,16 @@
         <table class="table scores">
           <thead>
             <tr>
-              <th scope="col">Games</th>
-              <th scope="col">Score</th>
-              <th scope="col">Winner(Diff)</th>
-              <th scope="col">Loser(Diff)</th>
+              <th class="table-game" scope="col">Games</th>
+              <th class="table-score" scope="col">Score</th>
+              <th class="table-outcome" scope="col">Winner(Diff)</th>
+              <th class="table-outcome" scope="col">Loser(Diff)</th>
             </tr>
           </thead>
           <tbody>
             <% courts[court].each do |game| %>
               <tr id="pool_<%= game["id"] %>" data-pool_id="<%= game["id"] %>">
-                <td>
+                <td class="table-game" >
                   <%= create_game_title_from_team_ids(game["team_ids"]) %>
                   <% if game.version == 'playoff' && !@tournament.closed && @current_user && @current_user.admin? && game.score %>
                     <%= link_to "(Edit)",
@@ -60,7 +60,6 @@
           </tbody>
         </table>
       </div>
-
       <div class="col-4" id="non_modal_leaderboard">
         <%= render 'shared/non_modal_leaderboard_list', in_playoffs: @in_playoffs, court: court, teams: get_court_standings(court, @game, @tournament) %>
       </div>

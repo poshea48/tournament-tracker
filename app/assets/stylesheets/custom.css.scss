@@ -12,15 +12,16 @@ html {
 body {
   font-size: 14px;
   font-family: sans-serif;
-  margin: 0;
+  margin: 0 !important;
   padding: 0;
   width: 100%;
 }
 
 #App {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 #app-content {
@@ -34,14 +35,27 @@ body {
 
 #main {
   flex: 1 auto;
-  margin-top: 30px;
+  // padding-top: 30px;
+  // height: calc(100% - 100px);
+  overflow: hidden;
+}
+
+#main-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.alert {
+  position: absolute;
+  width: 100%;
+  margin: 0 0 0 -15px;
+  z-index: 50;
 }
 
 a {
   text-decoration: none !important;
-}
-
-.table {
 }
 
 #temp_pool_location {
@@ -97,17 +111,6 @@ ul {
   }
 }
 
-#non_modal_leaderboard {
-  tr {
-    height: 20px;
-  }
-
-  td,
-  th {
-    padding: 0.5rem;
-  }
-}
-
 #players {
   max-width: 600px;
 }
@@ -122,7 +125,10 @@ ul {
 }
 
 /*****  Navbar ******/
-
+.navbar {
+  height: 50px;
+  position: relative;
+}
 .navbar-toggler {
   padding: 0.25em 0.5em !important;
   color: #fff !important;
@@ -132,6 +138,21 @@ ul {
 .nav-item {
   color: #fff !important;
   // align-self: center;
+}
+
+@media screen and (max-width: 575px) {
+  #navbarContent {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    padding: 0.5em 1em;
+    background: #343a40;
+    width: 100%;
+    z-index: 30;
+    .navbar-nav {
+      align-items: flex-end;
+    }
+  }
 }
 
 // .fa.fa-navicon {
@@ -219,18 +240,31 @@ td {
   opacity: 1;
 }
 
+// Table fields
+.tourn-field {
+  width: 30%;
+  overflow-y: scroll;
+}
+.player {
+  width: 40%;
+  text-align: center;
+}
+
+.date,
+.type,
+.reg,
+.action,
+.place,
+.results,
+.points,
+.rank {
+  width: 20%;
+  text-align: center;
+}
+
 /**********  Show Tournament *********/
 .edit-tourn {
   font-size: 14px;
-}
-.tournament-play-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  a {
-    text-decoration: none;
-    margin: 10px;
-  }
 }
 
 /************  Game Play    ************/
@@ -252,6 +286,58 @@ td {
 
 .leaderboard-link {
   display: none;
+}
+
+.play-content {
+  overflow-y: scroll;
+}
+
+.table-game {
+  width: 30%;
+}
+
+.table-score {
+  width: 15%;
+}
+
+.table-outcome {
+  width: 25%;
+}
+
+#non_modal_leaderboard {
+  table {
+    width: 100%;
+    thead {
+      height: 35px;
+      tr {
+        width: 100%;
+        border-bottom: 1px solid #dee2e6;
+      }
+    }
+    tbody {
+      td {
+        text-align: center;
+      }
+    }
+  }
+  tr {
+    height: 20px;
+  }
+
+  td,
+  th {
+    padding: 0.5rem;
+  }
+}
+
+.place,
+.record,
+.diff {
+  width: 20%;
+}
+.player {
+  width: 40%;
+  text-align: center;
 }
 
 /************  Sign up form ************/

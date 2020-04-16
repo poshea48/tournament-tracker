@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TournamentTracker</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <%= stylesheet_link_tag    'landing', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+  <body>
+
+<div id="landing">
+  <h1 class="landing-header">Welcome to The Tournament Tracker</h1>
+  <h3 class="landing-subheader">Keep track of and participate in Beach Volleyball Tournaments</h3>
+  <div class="links-wrapper">
+      <button class="landing-button">
+        <%= link_to "Enter as Guest", tournaments_path, class: "guest-link" %>
+      </button>
+      
+      <button class="landing-button">
+      <%= link_to "Log in", login_path, class: "login-link" %>
+      </button>
+  </div>
+  <small class='contact'>Contact Admin for Signing up at osheapaulf@gmail.com</small>
+</div>
+<body>
+</html>

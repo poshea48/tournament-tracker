@@ -1,27 +1,24 @@
-
-<div class="modal-body pt-0">
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Place</th>
-        <th scope="col">Player</th>
-        <th scope="col">Record</th>
-        <th scope="col">Diff</th>
-      </tr>
-    </thead>
-    <tbody>
+<table class="table-leaderboard">
+  <thead>
+    <tr>
+      <th class="place" scope="col">Place</th>
+      <th class="player" scope="col">Player</th>
+      <th class="record" scope="col">Record</th>
+      <th class="diff" scope="col">Diff</th>
+    </tr>
+  </thead>
+  <tbody>
     <% teams.each_with_index do |team, i| %>
       <tr>
-        <td><%=(i + 1).ordinalize %></td>
-        <td><%= team.team_name %></td>
-        <td><%= team.pool_record %></td>
+        <td class="place"><%=(i + 1).ordinalize %></td>
+        <td class="player"><%= team.team_name %></td>
+        <td class="record" ><%= team.pool_record %></td>
         <% if in_playoffs %>
-          <td> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></td>
+          <td class="diff"> <%= team.playoffs == '0' ? '0' : sprintf("%+d", team.playoffs) %></td>
         <% else %>
-          <td><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>
+          <td class="diff"><%= team.pool_diff == 0 ? '0' : sprintf("%+d", team.pool_diff) %></td>
         <% end %>
       </tr>
     <% end %>
-    </tbody>
-  </table>
-</div>
+  </tbody>
+</table>

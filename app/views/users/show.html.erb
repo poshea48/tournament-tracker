@@ -1,36 +1,36 @@
-  <div class="col-md-4 mr-auto ml-auto">
-    <div class="card card-body bg-info text-white mb-3">
-      <div class="text-center">
-        <h1 class="display-4 text-center"><%= @player.first_name %> <%= @player.last_name %></h1>
-        <h5>Ranking: <%= @ranking.ordinalize %></h5>
-        <div class="d-flex justify-content-around">
-          <% if @user && (@user.id == @player.id) %>
-            <span><%= link_to "Edit Profile", edit_player_path(@player), class: "text-dark" %></span>
-            <span><%= link_to "Change password", edit_password_path(@player), class: "text-dark" %></span>
-          <% end %>
-        </div>
+<div class="col-md-4 mr-auto ml-auto">
+  <div class="card card-body bg-info text-white mb-3">
+    <div class="text-center">
+      <h1 class="display-4 text-center"><%= @player.first_name %> <%= @player.last_name %></h1>
+      <h5>Ranking: <%= @ranking.ordinalize %></h5>
+      <div class="d-flex justify-content-around">
+        <% if @user && (@user.id == @player.id) %>
+          <span><%= link_to "Edit Profile", edit_player_path(@player), class: "text-dark" %></span>
+          <span><%= link_to "Change password", edit_password_path(@player), class: "text-dark" %></span>
+        <% end %>
       </div>
     </div>
   </div>
-  <h2>Past tournaments</h2>
-  <table class="table">
-    <thead>
+</div>
+<h2>Past tournaments</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="tourn-field" scope="col">Tournament</th>
+      <th class="date" scope="col">Date</th>
+      <th class="place"scope="col">Place</th>
+      <th class="points" scope="col">Points Earned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @tournaments.empty? %>
       <tr>
-        <th scope="col">Tournament</th>
-        <th scope="col">Date</th>
-        <th scope="col">Place</th>
-        <th scope="col">Points Earned</th>
+        <td colspan="4">N/A</td>
       </tr>
-    </thead>
-    <tbody>
-      <% if @tournaments.empty? %>
-        <tr>
-          <td colspan="4">N/A</td>
-        </tr>
-      <% else %>
-        <% @tournaments.each do |tourn| %>
-          <%= render 'tournament', tournament: tourn, cache: true %>
-        <% end %>
+    <% else %>
+      <% @tournaments.each do |tourn| %>
+        <%= render 'tournament', tournament: tourn, cache: true %>
       <% end %>
-    </tbody>
-  </table>
+    <% end %>
+  </tbody>
+</table>

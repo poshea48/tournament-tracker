@@ -1,31 +1,55 @@
-<div id="tournament-list" class="d-flex flex-column">
-  <% if @user && @user.admin? %>
-  <div class="admin-create p-1">
-    <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
-  </div>
-  <% end %>
-  <div class="table-responsive">
-    <h2 class="text-center">Tournament Home Page</h2>
-    <table class="table">
+<div id="tournaments-list">
+  <div class="open">
+    <h2 class="text-center">Active Tournaments</h2>
+    <% if @user && @user.admin? %>
+      <div class="admin-create p-1">
+        <%= link_to "  Create New Tournament", new_tournament_path, class: "fa fa-plus" %>
+      </div>
+    <% end %>
+    <table class="table table-tourns">
       <thead>
         <tr>
-          <th scope="col">Tournament</th>
-          <th scope="col">Date</th>
-          <th scope="col">Type</th>
-          <th scope="col">Registration</th>
-          <th scope="col">Results</th>
+          <th class="tourn-field" scope="col">Tournament</th>
+          <th class="date" scope="col">Date</th>
+          <th class="type" scope="col">Type</th>
+          <th class="reg" scope="col">Registration</th>
           <% if @user && @user.admin? %>
-            <th scope="col">Action</th>
+            <th class="action" scope="col">Action</th>
           <% end %>
         </tr>
       </thead>
       <tbody>
-        <% if @tournaments.empty? %>
+        <% if @tournaments_active.empty? %>
           <tr>
             <td colspan="4">No Tournaments</td>
           </tr>
         <% else %>
-          <%= render @tournaments, cache: true %>
+          <%= render @tournaments_active, cache: true %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="closed">
+    <h2 class="text-center">Closed Tournaments</h2>
+    <table class="table table-tourns">
+      <thead>
+        <tr>
+          <th class="tourn-field" scope="col">Tournament</th>
+          <th class="date" scope="col">Date</th>
+          <th class="type" scope="col">Type</th>
+          <th class="results" scope="col">Results</th>
+          <% if @user && @user.admin? %>
+            <th class="action" scope="col">Action</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @tournaments_closed.empty? %>
+          <tr>
+            <td colspan="4">No Tournaments</td>
+          </tr>
+        <% else %>
+          <%= render @tournaments_closed, cache: true %>
         <% end %>
       </tbody>
     </table>

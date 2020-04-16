@@ -1,13 +1,14 @@
 Rails.application.routes.draw do
 
+  get 'landing/index'
   get 'games/index'
   get 'playoffs/index'
   get 'playoffs/new'
   get 'playoff/index'
   get 'playoff/new'
-  root to: 'tournaments#index'
+  root to: 'landing#index'
   resources :tournaments
-
+  get '/tournaments', to: 'tournaments#index'
   get    '/tournaments/:id/add_team',    to: 'tournaments#add_team', as: :add_team
   post   '/tournaments/:id/add_team',    to: 'tournaments#add_to_tournament'
   delete '/tournaments/:id/delete_team', to: 'tournaments#delete_team', as: :delete_team
@@ -34,7 +35,7 @@ Rails.application.routes.draw do
 
   # resources :users
   get '/players',          to: 'users#index'
-  get '/signup',           to: 'users#new'
+  get '/signup',           to: 'users#new', as: :new_session
   post '/signup',          to: 'users#create'
   get '/players/:id',      to: 'users#show', as: :player
   get '/players/:id/edit', to: 'users#edit', as: :edit_player

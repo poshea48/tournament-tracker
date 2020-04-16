@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+}
+#landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  background: #ffd400;
+  background: url(optx-2.jpg) no-repeat center center fixed;
+  background-size: cover;
+}
+
+.landing-header {
+  text-transform: uppercase;
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  color: #fff;
+}
+
+.landing-subheader {
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 1em 2em;
+  color: black;
+}
+.links-wrapper {
+  display: flex;
+  margin: 3em 0 1em 0;
+  justify-content: space-between;
+}
+
+.guest-link-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-button {
+  width: 150px;
+  height: 45px;
+  padding: 0.25em;
+  background: #ee295c;
+  border-radius: 20px;
+  margin-right: 1em;
+}
+
+.login-link,
+.guest-link {
+  text-decoration: none;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.contact {
+  color: #ee295c;
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0 5em;
+  text-transform: uppercase;
+  text-align: center;
+}
+/* 
+@media screen and (max-width: 760px) {
+  .landing-header {
+    font-size: 2rem;
+  }
+  .landing-subheader {
+    font-size: 1.2rem;
+  }
+} */
+
+@media screen and (max-width: 700px) {
+  .landing-header {
+    font-size: 2rem;
+  }
+  .landing-subheader {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 625px) {
+  .landing-header {
+    font-size: 1.8rem;
+  }
+  .landing-subheader {
+    font-size: 1rem;
+  }
+
+  .landing-button {
+    width: 125px;
+    height: 40px;
+  }
+
+  .login-link,
+  .guest-link {
+    font-size: 12px;
+  }
+}

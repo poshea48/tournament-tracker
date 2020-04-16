@@ -1,60 +1,112 @@
-<div class="tournament_title">
-  <h2 class="text-center">
-    <%= @tournament.name %>
-  </h2>
-  <h3 class="text-center"><%= normalize_date_title(@tournament.date) %></h3>
-  <h4 class="text-center">TYPE: <%= @tournament.tournament_type.upcase %></h4>
-  <% if @user && @user.admin? %>
-    <div class="text-center">
-      <small class="text-center m-0 edit-tourn">(<%= link_to "Edit", edit_tournament_path(@tournament) %>)</small>
-    </div>
-  <% end %>
-</div>
-<div class="tournament-play-links">
-  <% if @tournament.poolplay_started %>
-    <%= link_to "Pool Play", poolplay_path(@tournament.id) %>
-  <% end %>
-  <% if @tournament.playoffs_started %>
-    <%= link_to "Playoffs", playoffs_path(@tournament) %>
-  <% end %>
-</div>
+<div id="tourn-home">
 
-<% cache(@tournament) do %>
+  <div id="tourn-header">
+    <div class="tourn-title">
+      <h2 class="text-center">
+        <%= @tournament.name %>
+      </h2>
+    </div>
+
+    <div class="tourn-info">
+      <div id="checks">
+        <div class="points">
+          <% if @tournament.registration_open == false %>
+          <label class="checked" for="players-check">Players Selected</label>
+          <span>✅</span>
+          <% else %>
+          <label for="players-check">Players Selected</label>
+          <% end %>
+        </div>
+        <div class="points">
+          <% if @tournament.poolplay_started? %>
+          <label class="checked" for="pool-check">Pool Play Created</label>
+          <span>✅</span>
+          <% else %>
+          <label for="pool-check">Pool Play Created</label>
+          <% end %>
+        </div>
+        <div class="points">
+          <% if @tournament.poolplay_finished? %>
+          <label class="checked" for="finish-pool">Pool Play Finished</label>
+          <span>✅</span>
+          <% else %>
+          <label for="finish-pool">Pool Play Finished</label>
+          <% end %>
+        </div>
+        <div class="points">
+          <% if @tournament.closed? %>
+          <label class="checked" for="finish-tourn">Playoffs Finished</label>
+          <span>✅</span>
+          <% else %>
+          <label for="finish-tourn">Playoffs Finished</label>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="tourn-type">
+        <h3 class="text-center"><%= normalize_date_table(@tournament.date) %></h3>
+        <h4 class="text-center">
+          TYPE: <%= @tournament.tournament_type.upcase %>
+        </h4>
+        <% if @user && @user.admin? %>
+        <div class="text-center">
+          <small class="text-center m-0 edit-tourn"
+            >(<%= link_to "Edit", edit_tournament_path(@tournament) %>)</small
+          >
+        </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="tournament-play-links">
+      <% if @tournament.poolplay_started %> <%= link_to "Pool Play",
+      poolplay_path(@tournament.id) %> <% end %> <% if
+      @tournament.playoffs_started %> <%= link_to "Playoffs",
+      playoffs_path(@tournament) %> <% end %>
+    </div>
+  </div>
+  <% cache(@tournament) do %>
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">rank</th>
-        <% if @tournament.tournament_type == 'kob' || @tournament.tournament_type == 'kob/team' %>
-          <th scope="col">Player</th>
+        <th class="rank" scope="col">rank</th>
+        <% if @tournament.tournament_type == 'kob' ||
+        @tournament.tournament_type == 'kob/team' %>
+        <th class="player" scope="col">Player</th>
         <% else %>
-          <th scope="col">Team</th>
+        <th scope="col">Team</th>
         <% end %>
-        <th scope="col">Total Points</th>
-        <th scope="col">Latest Results</th>
+        <th class="points" scope="col">Total Points</th>
         <% if @user && @user.admin? && @tournament.registration_open %>
-          <th scope="col">Remove Team</th>
+        <th class="action" scope="col">Remove Team</th>
         <% end %>
       </tr>
     </thead>
     <tbody>
-      <%= render partial: 'tournaments/team', collection: sort_teams_by_points(@tournament.poolplay_team_objects), cache: true %>
+      <%= render partial: 'tournaments/team', collection:
+      sort_teams_by_points(@tournament.poolplay_team_objects), cache: true %>
     </tbody>
   </table>
-<% end %>
-<p class="disclaimer">* Total number of players needs to be a multiple of 4 to start pool play</p>
-
-<div class="action_button">
-  <% if @current_user && @current_user.admin? && !@tournament.poolplay_started %>
-    <div class="">
-      <% if @tournament.registration_open %>
-        <%= link_to "Add #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}", add_team_path(@tournament.id), class: "btn btn-md btn-success" %>
-      <% end %>
-
-      <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'} Registration", tournament_path(:tournament => {registration_open: !@tournament.registration_open}), method: "patch", class: 'btn btn-md btn-primary', remote: true %>
-
-      <% if ready_to_start_poolplay?%>
-        <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id), class: "btn btn-primary" %>
-      <% end %>
-    </div>
   <% end %>
+  <p class="disclaimer">
+    * Total number of players needs to be a multiple of 4 to start pool play
+  </p>
+
+  <div class="action_button">
+    <% if @current_user && @current_user.admin? && !@tournament.poolplay_started
+    %>
+    <div class="">
+      <% if @tournament.registration_open %> <%= link_to "Add
+      #{@tournament.tournament_type == 'kob' ? 'Player' : 'Team'}",
+      add_team_path(@tournament.id), class: "btn btn-md btn-success" %> <% end
+      %> <%= link_to "#{@tournament.registration_open ? 'Close' : 'Open'}
+      Registration", tournament_path(:tournament => {registration_open:
+      !@tournament.registration_open}), method: "patch", class: 'btn btn-md
+      btn-primary', remote: true %> <% if ready_to_start_poolplay?%> 
+      <%= link_to "Start Pool Play", new_poolplay_path(@tournament.id), class: "btn btn-primary" %> <% end %>
+    </div>
+
+    <% end %>
+  </div>
+
 </div>

@@ -1,6 +1,6 @@
 <tr>
-  <td><%= link_to tournament[:tourn_name], playoffs_path(tournament[:tourn_id])%></td>
-  <td><%= normalize_date_table(tournament[:tourn_date]) %></td>
-  <td><%= tournament[:place].ordinalize %></td>
-  <td><%= tournament[:points] %></td>
+  <td class="tourn-field"><%= link_to tournament[:tourn_name], playoffs_path(tournament[:tourn_id])%></td>
+  <td class="date"><%= normalize_date_table(tournament[:tourn_date]) %></td>
+  <td class="place" ><%= tournament[:place].ordinalize %></td>
+  <td class="points"><%= tournament[:points] %></td>
 </tr>

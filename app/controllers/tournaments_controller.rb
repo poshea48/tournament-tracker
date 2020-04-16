@@ -12,7 +12,8 @@ class TournamentsController < ApplicationController
   end
   def index
     # @tournaments = Tournament.all
-    @tournaments = Tournament.all.order("date DESC")
+    @tournaments_active = Tournament.where(closed: false)#.order("date DESC")
+    @tournaments_closed = Tournament.where(closed: true)#.order("date DESC")
   end
 
   def new
@@ -31,6 +32,7 @@ class TournamentsController < ApplicationController
   end
 
   def show
+    @date = Time.new(@tournament.date)
   end
 
   def edit

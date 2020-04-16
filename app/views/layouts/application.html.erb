@@ -17,10 +17,9 @@
       </div>
     </div>
     <div id="App">
-      <div id="app-content" class="d-flex flex-column bd-highlight">
-          <%= render 'layouts/navigation' %>
-        <div id="main" class="d-flex">
-            <div class="col-md-12 d-flex flex-column">
+        <%= render 'layouts/navigation' %>
+        <div id="main">
+            <div id="main-content"class="col-md-12 d-flex flex-column">
               <% flash.each do |name, msg| %>
                 <div class="text-center alert alert-<%= name %>">
                   <%= msg %>
@@ -29,8 +28,7 @@
               <%= yield %>
             </div>
         </div>
-      </div>
-      <footer id="footer"></footer>
+        <footer id="footer"></footer>
     </div>
   </body>
 </html>

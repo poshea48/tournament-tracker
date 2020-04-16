@@ -1,29 +1,27 @@
 <tr data-id="<%= tournament.id %>">
-  <td><%= link_to tournament.name, tournament_path(tournament)%></td>
-  <td><%= normalize_date_table(tournament.date) %></td>
-  <td><%= tournament.tournament_type.upcase %></td>
-  <td><%= tournament.registration_open ? 'Open' : 'Closed' %></td>
-  <td>
-    <% if tournament.closed %>
-      <%= link_to "Final Results", final_results_path(tournament), remote: true, format: 'js' %>
-    <% else %>
-      N/A
-    <% end %>
-  </td>
+  <td class="tourn-field"><%= link_to tournament.name, tournament_path(tournament)%></td>
+  <td class="date" ><%= normalize_date_table(tournament.date) %></td>
+  <td class="type" ><%= tournament.tournament_type.upcase %></td>
+  <% if !tournament.closed %>
+    <td class="reg" ><%= tournament.registration_open ? 'Open' : 'Closed' %></td>
+  <% end %>
+  <% if tournament.closed %>
+    <td class="results"><%= link_to "Final Results", final_results_path(tournament), remote: true, format: 'js' %></td>
+  <% end %>
   <% if @user && @user.admin? %>
     <% if tournament.closed %>
-      <td class="action-row">
+      <td class="action-row action">
         <%= link_to tournament_path(tournament), id: "delete", method: "delete", data: { confirm: "Are you sure" } do %>
           <i class="fa fa-trash fa-2x"></i>
         <% end %>
       </td>
     <% else %>
       <% if !tournament.poolplay_started && tournament.registration_open %>
-        <td class="action-row">
+        <td class="action-row action">
           <%= link_to "Add", add_team_path(tournament.id), class: "btn btn-sm btn-success" %>
         </td>
       <% else %>
-        <td class="action-row">N/A</td>
+        <td class="action-row action">N/A</td>
       <% end %>
     <% end %>
   <% end %>
